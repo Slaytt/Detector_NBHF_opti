@@ -1,0 +1,13 @@
+# --- MATLAB ---
+*.asv
+*.m~
+*.autosave
+*.mex*
+slprj/
+*.slxc
+codegen/
+octave-workspace
+
+# --- macOS ---
+.DS_Store
+._*
