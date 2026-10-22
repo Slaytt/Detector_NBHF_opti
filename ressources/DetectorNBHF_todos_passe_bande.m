@@ -11,12 +11,13 @@ clear
 close all
 
 %  software grafico
-graphics_toolkit('gnuplot') 
+graphics_toolkit('gnuplot')
 
 %  medicion del tiempo del calculo
 tic();
 
 pkg load signal
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% PARAMETROS
@@ -49,7 +50,7 @@ f1=30000
 f2=90000
 
 % tiempo minimo entre dos clicks (en s) : es decir no vamos a registrar dos clicks diferentes si el tiempo entre los dos esta menos que t_minimo.
-% para delfines costeros : 100 micro_s = 0.1 ms = 1/10000 s   
+% para delfines costeros : 100 micro_s = 0.1 ms = 1/10000 s
 % mais dans notre cas pour ne pas avoir plein de detection des rebonds on a mis t_minimo a 1 ms (dc 2 ms annulés)
 t_minimo=1/1000
 % t_trozo : tiemo de cada trozo analizado (en s)
@@ -70,7 +71,7 @@ fprintf(fileID,' Detections : \n');
 fprintf(fileID,'Fichier \t canal 1 \t canal 2 \t total \n');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  Loop de todos los archivos (k) 
+%  Loop de todos los archivos (k)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -94,7 +95,7 @@ for k=1:1:length(NombreArchivo)
   nbCanales = informations.NumChannels;
   tiempo_total_archivo = informations.Duration;
 
-%{ 
+%{
   ancienne version
   [tamano_total, nbCanales] = wavread(ArchivoSonido, "size");
   [s,fm,dyn] = wavread(ArchivoSonido,[1 10]);
@@ -146,14 +147,14 @@ for k=1:1:length(NombreArchivo)
                 % Detecta los picos alta frecuencia
        		[x, ix] = max(senal1HF);
 
-                % Descarta los que también tienen energía en frecuencia mediana 
+                % Descarta los que también tienen energía en frecuencia mediana
                 spectre=abs(fft(senal1(max(ix-floor(fm/2000 -1),1):min(ix+floor(fm/2000),length(senal1)))));
        		energieClic = mean(spectre(f1clic/1000:f2clic/1000));
        		energie_bande_passante=mean(spectre(f1/1000:f2/1000));
         	if (energieClic>seuil*energie_bande_passante)
 		   dates_clicks1=[dates_clicks1;(i-1)*t_trozo+ix/fm];
           	endif
-	        % pone a cero la senal entre el max-t_minimo y el max+t_minimo 
+	        % pone a cero la senal entre el max-t_minimo y el max+t_minimo
        		senal1HF(max(1,ix-floor(t_minimo*fm)):min(length(senal1),ix+floor(t_minimo*fm)))=0;
    	endwhile
 
@@ -164,19 +165,19 @@ for k=1:1:length(NombreArchivo)
 
 
         %%% Canal 2
-	   if (nbCanales > 1)                                                           
-	       senal2 = extrait(:,2);                                             
+	   if (nbCanales > 1)
+	       senal2 = extrait(:,2);
 	       senal2HF=filter(butterBHF1,butterBHF2,senal2);
    	       umbral2 = std(senal2HF)*coef_umbral;
 
 %	       n_PeakHF=0;
 %               n=0;
 
-	       while (max(senal2HF)>umbral2)                                                     
+	       while (max(senal2HF)>umbral2)
                    % Detecta los picos alta frecuencia
       		   [x, ix] = max(senal2HF);
-               
-                   % Descarta los que también tiene energía en frecuencia mediana 
+
+                   % Descarta los que también tiene energía en frecuencia mediana
                    spectre=abs(fft(senal2(max(ix-floor(fm/2000 -1),1):min(ix+floor(fm/2000),length(senal2)))));
        		   energieClic = mean(spectre(f1clic/1000:f2clic/1000));
        		   energie_bande_passante=mean(spectre(f1/1000:f2/1000));
@@ -203,47 +204,47 @@ for k=1:1:length(NombreArchivo)
        while (n<(length(dates_clicks)-1))
              if (abs(dates_clicks(n+1,1)-dates_clicks(n,1))<t_fusion)
                   dates_clicks = [dates_clicks(1:n,:);dates_clicks(n+2:length(dates_clicks),:)] ;
-             endif 
+             endif
              n=n+1;
-       endwhile  
+       endwhile
 
   else
-       dates_clicks = [dates_clicks1 ones(length(dates_clicks1),1)];  
+       dates_clicks = [dates_clicks1 ones(length(dates_clicks1),1)];
        dates_clicks = sortrows(dates_clicks);
-       dates_clicks2 = dates_clicks1 *0; 
+       dates_clicks2 = dates_clicks1 *0;
   end
 
 
   % Affichage du nb de clicks
 
-if length(dates_clicks1)>0  
+if length(dates_clicks1)>0
   Detections1 = dates_clicks1(:,(length(dates_clicks)>0));
-else 
+else
   Detections1=[];
 endif
 
-if length(dates_clicks2)>0  
+if length(dates_clicks2)>0
   Detections2 = dates_clicks2(:,(length(dates_clicks)>0));
-else 
+else
   Detections2=[];
 endif
 
-if length(dates_clicks)>0  
+if length(dates_clicks)>0
   Detections = dates_clicks(:,(length(dates_clicks)>0));
-else 
+else
   Detections=[];
 endif
 
   nbclicksCanal1 = length(Detections1);
-  nbclicksCanal2 = length(Detections2)*(nbCanales>1);	
+  nbclicksCanal2 = length(Detections2)*(nbCanales>1);
   nbclicks= length(Detections);
 
 
 
   % ecriture des fichiers de sortie
 if (nbCanales > 1)
-  dlmwrite(ArchivoResultado1,Detections1); 
-  dlmwrite(ArchivoResultado2,Detections2); 
+  dlmwrite(ArchivoResultado1,Detections1);
+  dlmwrite(ArchivoResultado2,Detections2);
 end
   dlmwrite(ArchivoResultado,dates_clicks,'\t');
 
@@ -257,4 +258,3 @@ fprintf(fileID,'\n');
 fprintf(fileID,'Duree totale %f s \n', duracion);
 
 fclose(fileID);
-

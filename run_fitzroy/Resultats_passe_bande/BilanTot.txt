@@ -1,0 +1,8 @@
+Seuil: 0.400000, coef_umbral 9, frequence coupure basse 100000, frequence coupure haute 180000,
+BP du clic 120000 - 140000, BP de référence 30000 - 90000  
+  
+ Detections : 
+Fichier 	 canal 1 	 canal 2 	 total 
+FichierTest_FitzRoy.wav 	 318 	 298 	 377 
+
+Duree totale 25.361867 s 
