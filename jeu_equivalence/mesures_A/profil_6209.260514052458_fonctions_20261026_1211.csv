@@ -1,0 +1,203 @@
+fonction;appels;temps_propre_s
+DetectorNBHF_todos_passe_bande;1;0.043524
+clear;23;0.002095
+close;1;0.000208
+nargin;295;0.000038
+binary ==;370;0.000062
+ischar;139;0.000013
+strcmpi;13;0.000010
+get;2;0.000047
+isfigure;3;0.000016
+binary <;190;0.000040
+ishghandle;3;0.000002
+any;255;0.000160
+postfix .';6;0.000004
+nargout;50;0.000019
+binary >;332;0.000095
+graphics_toolkit;1;0.000249
+all;50;0.000025
+prefix !;576;0.000076
+available_graphics_toolkits;1;0.000001
+strcmp;159;0.000096
+loaded_graphics_toolkits;2;0.000003
+__gnuplot_has_feature__;1;0.001031
+isempty;382;0.000063
+__gnuplot_version__;1;0.000093
+gnuplot_binary;2;0.000018
+mlock;3;0.000002
+sprintf;4;0.000018
+system;1;0.048045
+binary !=;125;0.000041
+strrep;11;0.000021
+size;84;0.000067
+false;360;0.000241
+numel;147;0.000031
+compare_versions;9;0.001056
+rows;43;0.000013
+isdigit;18;0.000035
+binary |;43;0.000015
+find;200;0.000308
+ostrsplit;19;0.000467
+isscalar;52;0.000017
+binary -;227;0.038260
+diff;19;0.000019
+end;104;0.000015
+mat2cell;19;0.000040
+postfix ';19;0.000006
+str2double;18;0.000036
+isnan;19;0.000010
+length;129;0.000034
+max;148;0.685497
+binary +;173;0.000017
+feval;1;0.000046
+__init_gnuplot__;1;0.000229
+set;1;0.000043
+tic;1;0.000000
+pkg;1;0.000746
+prefix -;7;0.000002
+user_config_dir;1;0.000001
+__octave_config_info__;34;0.000025
+fullfile;14;0.001359
+cellfun;277;0.000632
+anonymous@/opt/homebrew/Cellar/octave/11.3.0_1/share/octave/11.3.0/m/miscellaneous/fullfile.m:0:0;33;0.000087
+iscell;42;0.000004
+binary &;34;0.000002
+iscellstr;47;0.000003
+num2cell;14;0.000011
+common_size;26;0.000164
+filesep;16;0.000010
+ispc;29;0.000054
+strcat;14;0.000448
+char;34;0.000007
+cellstr;39;0.000036
+horzcat;14;0.000068
+undo_string_escapes;14;0.000005
+regexprep;17;0.000315
+geteuid;1;0.000006
+default_prefix;1;0.000010
+user_data_dir;1;0.000003
+tilde_expand;2;0.000003
+confirm_recursive_rmdir;1;0.000001
+true;26;0.000013
+load_packages;1;0.000920
+installed_packages;1;0.000140
+load;2;0.000624
+anonymous@/opt/homebrew/Cellar/octave/11.3.0_1/share/octave/11.3.0/m/pkg/private/installed_packages.m:0:0;2;0.000003
+unique;5;0.000192
+isnumeric;68;0.000013
+islogical;7;0.000001
+issparse;18;0.000001
+isrow;10;0.000004
+isvector;7;0.000003
+sort;7;0.000035
+path;1;0.000019
+strfind;11;0.000016
+cell;4;0.000003
+load_packages_and_dependencies;1;0.000427
+load_packages_and_dependencies>load_package_dirs;2;0.000075
+isfield;2;0.000001
+EXEC_PATH;2;0.000010
+isfolder;6;0.000095
+stat;6;0.000031
+exist;4;0.000107
+getarchdir;2;0.000116
+getarch;2;0.000008
+S_ISDIR;2;0.000001
+addpath;4;0.026616
+/Users/slayt/.local/share/octave/api-v61/packages/control-4.2.3/aarch64-apple-darwin25.4.0-api-v61/PKG_ADD;1;0.000083
+autoload;57;0.000826
+/Users/slayt/.local/share/octave/api-v61/packages/signal-1.4.8/PKG_ADD;1;0.000149
+__load_signal__;1;0.000540
+mfilename;2;0.000002
+fileparts;2;0.000373
+strchr;3;0.000071
+binary <=;9;0.000000
+rindex;2;0.000222
+index;3;0.000047
+lower;5;0.000012
+version;1;0.000007
+OCTAVE_VERSION;1;0.000001
+__event_manager_register_documentation__;1;0.000005
+isguirunning;2;0.000000
+textread;1;0.002543
+warning;3;0.000067
+Inf;1;0.000001
+fopen;4;0.000336
+ftell;1;0.000002
+fscanf;1;0.000011
+min;66;0.000045
+isfinite;53;0.000009
+fseek;1;0.000003
+fread;1;0.000015
+fclose;4;0.000306
+strread;1;0.001281
+typeinfo;3;0.000001
+do_string_escapes;1;0.000001
+regexp;8;0.000081
+NaN;1;0.000002
+strtrim;2;0.000043
+isspace;1;0.000005
+binary /;194;0.000042
+ceil;3;0.000002
+setdiff;2;0.000368
+validsetargs;3;0.000071
+anonymous@/opt/homebrew/Cellar/octave/11.3.0_1/share/octave/11.3.0/m/set/private/validsetargs.m:0:0;6;0.000016
+ismember;1;0.000051
+iscomplex;4;0.000000
+issorted;1;0.000001
+isreal;3;0.000000
+lookup;1;0.000003
+prefix --;1;0.000000
+strread>split_by;1;0.000032
+display;10;0.000074
+disp;10;0.000038
+fprintf;11;0.000078
+audioinfo;1;0.000106
+binary >=;2;0.000000
+butter;1;0.000908
+fix;1;0.000001
+pi;2;0.000000
+binary *;164;0.000015
+tan;1;0.000000
+exp;1;0.000001
+mod;1;0.000002
+binary ^;1;0.000001
+sftrans;1;0.000017
+prod;3;0.000011
+binary ./;78;0.000025
+real;5;0.000001
+zeros;3;0.000002
+bilinear;1;0.000256
+postpad;1;0.000020
+ndims;67;0.000025
+poly;2;0.000096
+binary .*;32;0.042920
+imag;2;0.000001
+conj;1;0.000002
+size_equal;1;0.000000
+floor;127;0.000027
+audioread;11;0.761315
+filter;11;0.613140
+std;11;0.002019
+var;11;0.001838
+isfloat;11;0.000003
+isa;167;0.000226
+sum;63;0.082835
+ones;36;0.040389
+sumsq;11;0.110253
+double;11;0.000006
+sqrt;11;0.000014
+fft;26;0.002657
+abs;26;0.000083
+mean;52;0.004343
+mean>robust_mean_sum;52;0.000652
+class;52;0.000021
+sortrows;1;0.000016
+__sort_rows_idx__;1;0.000017
+dlmwrite;1;0.000558
+columns;2;0.000000
+repmat;1;0.000053
+reshape;2;0.000001
+toc;1;0.000001
+profile;1;0.000012
+__profiler_enable__;1;0.000000

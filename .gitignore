@@ -1,4 +1,4 @@
-# --- MATLAB ---
+# MATLAB
 *.asv
 *.m~
 *.autosave
@@ -8,6 +8,17 @@ slprj/
 codegen/
 octave-workspace
 
-# --- macOS ---
+# macOS
 .DS_Store
 ._*
+
+# Wav
+jeu_equivalence/wav/
+
+# Notes
+*.md
+
+# Python
+.venv/
+__pycache__/
+.pytest_cache/

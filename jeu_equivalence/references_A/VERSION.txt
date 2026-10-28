@@ -1,0 +1,42 @@
+# Références d'équivalence : sorties de A*
+date d'archivage : 2026-10-24 22:26
+Octave : 11.3.0   paquet signal : 1.4.8
+machine : MacBookPro18,1 / Apple M1 Pro / 16 Go de RAM / macOS 26.5.2
+
+A* : Detector_opti/Detector_NBHF_opti/run_bahia/DetectorNBHF_todos_passe_bande.m
+  sha256 d795e40c863ae51931f4116e5c6339155385be4ea0f2a3d8e58a4dfee44690d9
+A d'origine : Detector_opti/Detector_NBHF_opti/ressources/DetectorNBHF_todos_passe_bande.m
+  sha256 a9e78a1b7ac4d005e8610d409d15d4f8119b0849466ae6b7d1f8f75004f7f8d7
+manifeste.csv : sha256 35bc5f7d2a78b6b8ae9f37f69c70b77f04465aa3579c27d734440a6b0c25d6ab
+
+Filtre : si fcut_high >= fm/2, passe-haut Butterworth d'ordre 5 à fcut_low = 100 kHz
+(Bahía, 288 kHz) ; sinon, passe-bande 100–180 kHz d'origine (FitzRoy, 512 kHz).
+Coefficients exacts : coefs_filtre_<fm>.txt.
+Attention : l'en-tête de BilanTot.txt affiche toujours « frequence coupure haute 180000 »,
+car il est écrit avant la lecture du premier fichier. Il ne décrit donc pas le filtre réellement
+appliqué à Bahía.
+
+Déterminisme : vérifié par une relance complète, dont les sorties sont identiques à l'octet près
+(hors ligne « Duree totale » de BilanTot.txt).
+Durée du passage archivé (tic/toc de A) : Duree totale 412.506044 s
+Durée de la relance de contrôle (avec démarrage d'Octave) : 410.7 s
+Ces durées ne sont pas des mesures de temps au sens du protocole (section 7).
+
+# sha256 des sorties
+8016f132abcf36ae7d10ee99f8a64c8fa4da288c5fe5d0e6ffcb40433afcaf8f  BilanTot.txt
+2de7c6670d0fe376bb2788656b7394271f54cfe49f6747fbd3fecb18967a6e9a  Res_6209.260514035958.txt
+16e6131ce89801dfeb96097322ea83e5e513a9e801fdc788c1369a3d4d80d459  Res_6209.260514052458.txt
+4436e99cad15e6f5614cae8b31d3697c57054a5b4f1b53b79c3012fa31cc652f  Res_6209.260514080459.txt
+f91c74affb2ac523bd4818aa3d67cd97c409fd5db1aa65e920f67abf9297576d  Res_6209.260514082959.txt
+c902b4b63b84ed2f18b645a15a775c223e792bfc4a38bca7a3901ac714184fca  Res_6209.260514142459.txt
+d95d9cb3698654adf5b2154650fca5f014ba3db9850fa4b8a9238df13a509a18  Res_6209.260520021506.txt
+1bee22d45d5e31fc2122ac196b25f1df3f4d36fd302430510bd96672424ea8b2  Res_6209.260521110008.txt
+225a8c03fd5d8d1681ad9bc8459ec50aa77b9281e7fe446529acf9a47645b249  Res_6209.260521112008.txt
+ab8c0646a1272b7dc2ee6dbe43ff1337345d543bc5d6b8e4d8eac015a8d2048e  Res_6209.260521181508.txt
+30071c7f8ac31c5a7bbcc95b9d7351e3a9aad97484fce4523db294514d3fc6f7  Res_6209.260522003008.txt
+aae8c0a36c130a375069cad7643d89db80df9f11f7f31f6269476d5e0561955a  Res_6209.260523223511.txt
+167bd457f82d7e3d9ee57db821a1009b02e00d7db8523d0b638f70e358dd126d  Res_FichierTest_FitzRoy.txt
+7a7ee44a2f398c36dc3c6be28855be725dd92dab6cbd202d80f4632806e09789  Res_FichierTest_FitzRoy_Canal1.txt
+899660bf9b5fc89bbc0d781af9b4265ae34d6261e3baf7c2399cf0c22c626862  Res_FichierTest_FitzRoy_Canal2.txt
+01de7004d33e41f4c7025ecbf73f3b7cb42d6d6fb767c2bccadce1080ff06cc1  coefs_filtre_288000.txt
+153174bd44917c30fae14ebabbda92486a105a52155d00360d50aec891ce2869  coefs_filtre_512000.txt

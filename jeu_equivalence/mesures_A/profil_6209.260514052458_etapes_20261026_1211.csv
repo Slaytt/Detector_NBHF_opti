@@ -1,0 +1,36 @@
+fonction;appels;temps_inclusif_s
+TOTAL_A;1;2.528837
+clear;23;0.002095
+close;1;0.000274
+binary >;83;0.000066
+graphics_toolkit;1;0.051502
+sprintf;1;0.000005
+binary -;113;0.000006
+end;3;0.000001
+length;63;0.000021
+max;126;0.685471
+binary +;85;0.000005
+tic;1;0.000000
+pkg;1;0.035683
+textread;1;0.004987
+fopen;2;0.000176
+min;63;0.000039
+fclose;2;0.000145
+binary /;184;0.000040
+display;10;0.000112
+fprintf;10;0.000046
+audioinfo;1;0.000106
+binary >=;1;0.000000
+butter;1;0.001380
+binary *;145;0.000004
+floor;127;0.000027
+audioread;11;0.761315
+filter;11;0.613140
+std;11;0.318769
+ones;1;0.000001
+fft;26;0.002657
+abs;26;0.000083
+mean;52;0.006181
+sortrows;1;0.000035
+dlmwrite;1;0.000939
+toc;1;0.000001

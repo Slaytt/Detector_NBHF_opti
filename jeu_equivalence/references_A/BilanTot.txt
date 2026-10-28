@@ -1,0 +1,19 @@
+Seuil: 0.400000, coef_umbral 9, frequence coupure basse 100000, frequence coupure haute 180000,
+BP du clic 120000 - 140000, BP de référence 30000 - 90000  
+  
+ Detections : 
+Fichier 	 canal 1 	 canal 2 	 total 
+6209.260522003008.wav 	 1240 	 0 	 1240 
+6209.260521112008.wav 	 1295 	 0 	 1295 
+6209.260523223511.wav 	 468 	 0 	 468 
+6209.260514035958.wav 	 2374 	 0 	 2374 
+6209.260520021506.wav 	 1758 	 0 	 1758 
+6209.260514142459.wav 	 381 	 0 	 381 
+6209.260514080459.wav 	 914 	 0 	 914 
+6209.260521110008.wav 	 1133 	 0 	 1133 
+6209.260514052458.wav 	 21 	 0 	 21 
+6209.260521181508.wav 	 88 	 0 	 88 
+6209.260514082959.wav 	 1325 	 0 	 1325 
+FichierTest_FitzRoy.wav 	 318 	 298 	 377 
+
+Duree totale 412.506044 s 
