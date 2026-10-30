@@ -1,1 +1,1 @@
-"""Portage Python fidele (version B) du detecteur NBHF."""
+"""Faithful Python port (version B) of the NBHF detector."""

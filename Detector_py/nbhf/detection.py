@@ -1,1 +1,1 @@
-"""Etapes 3-4 : seuil du morceau et boucle de detection sur un canal."""
+"""Steps 3-4: chunk threshold and detection loop on one channel."""

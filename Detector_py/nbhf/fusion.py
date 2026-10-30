@@ -1,1 +1,1 @@
-"""Etape 5 : fusion des detections des deux canaux."""
+"""Step 5: merge of the detections of both channels."""

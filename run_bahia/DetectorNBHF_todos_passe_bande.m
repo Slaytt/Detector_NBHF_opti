@@ -32,7 +32,7 @@ pkg load signal
 % Aqui se da el camino de la carpeta de archivos de sonido .wav que se quiere abrir
 %Camino = '/media/patris/montreal/Mejillones_2024_09/DonneesHighBlue/';
 %Camino = '/media/malige/montreal/FitzRoy_2024_11/Polypheme/Convertis/';
-Camino = '/Users/slayt/Documents/StageBioacousitc/jeu_equivalence/wav/';   % A* modif 1
+Camino = '/Users/slayt/Documents/StageBioacousitc/Detector_opti/Detector_NBHF_opti/jeu_equivalence/wav/';   % A* modif 1
 
 % Listado de los archivos (se llama liste.txt y se encuentra en la misma carpeta que este programa)
 NombreArchivo = textread('liste_fichiers_extrait.txt','%s');
