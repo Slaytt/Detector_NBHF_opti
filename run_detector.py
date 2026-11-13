@@ -1,10 +1,6 @@
 """Main program: equivalent of DetectorNBHF_todos_passe_bande.m.
 
     python run_detector.py WAV_DIR LIST_FILE OUT_DIR [PARAMS.toml]
-
-LIST_FILE holds one .wav name per line (A's liste.txt); the files are processed in that
-order, which is the order of the lines of BilanTot.txt. Completed by Claude (Anthropic)
-on 10/11/2026 at the user's request (glue code only).
 """
 
 import sys
