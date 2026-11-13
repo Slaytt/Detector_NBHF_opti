@@ -44,20 +44,27 @@ def clickEnergies(window, f1clic, f2clic, f1, f2):
     return slice, slice2
 
 
-# while octave in python with class for candidate param
+# while octave in python with class for candidate param, change for a for loop with type flag bool
 def detectChannel(senal, senalHF, umbral, sampleRate, *, seuil, tMinimo, f1clic, f2clic, f1, f2):
-     senalHF = senalHF.copy()
-     n = len(senal)
-     zero = math.floor(tMinimo * sampleRate)
-     candidates = []
+    n = len(senal)
+    zero = math.floor(tMinimo * sampleRate)
+    candidates = []
 
-     while( senalHF.max() > umbral):
-        ix = int(np.argmax(senalHF))
-        x = senalHF[ix]
+    idx = np.flatnonzero(senalHF > umbral)
+    vals = senalHF[idx]
+    order = np.argsort(-vals, kind="stable")
+    idx = idx[order]
+    vals = vals[order]
+    dead = np.zeros(n, dtype=bool) 
+
+    for ix, x in zip(idx, vals): #
+        ix = int(ix)
+        if dead[ix]:    #si le pic est déjà passé on le skip et on passe au suivant (tour de boucle suivant) en gardant le +_ 1ms
+            continue
         start, stop = windowBounds(ix, sampleRate, n)
         eClic, eBande = clickEnergies(senal[start:stop],f1clic, f2clic, f1, f2)
         accepted = eClic > seuil * eBande
         candidates.append(Candidate(ix, x, eClic, eBande, accepted))
-        senalHF[max(0, ix - zero) : min(n, ix + zero + 1)] = 0.
+        dead[max(0, ix - zero) : min(n, ix + zero + 1)] = True
 
-     return candidates
+    return candidates

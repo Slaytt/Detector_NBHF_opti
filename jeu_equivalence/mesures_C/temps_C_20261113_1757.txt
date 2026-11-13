@@ -1,0 +1,11 @@
+date : 2026-11-13 17:57
+commande : chrono_python.py C --essais 3 --batterie
+version : C = paquet Detector_py/nbhf/, sha256 des .py caad97164803ec573cd5c25adcb3e603964cb4f63c8fffa24140c4ff3e0f4c50
+dépôt : commit 6ff7f42 (modifications non commitées)
+machine : MacBookPro18,1 / Apple M1 Pro / 16 Go / macOS 26.5.2
+alimentation : Now drawing from 'Battery Power', mode économie d'énergie désactivé
+python : 3.14.6, numpy 2.5.4, scipy 1.18.1, soundfile 0.14.0, BLAS accelerate unknown
+threads : OMP_NUM_THREADS=1, OPENBLAS_NUM_THREADS=1, VECLIB_MAXIMUM_THREADS=1
+temps d'un essai : time.perf_counter autour de Detector.detectFile (lecture + filtre + détection + fusion, sans l'écriture des fichiers ni le démarrage de Python)
+lecture : read_chunk sur tous les morceaux, médiane de 3, chronométrée à part
+cache disque : chaud (échauffement non compté)

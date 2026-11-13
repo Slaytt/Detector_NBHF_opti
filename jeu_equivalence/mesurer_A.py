@@ -90,8 +90,20 @@ def economie_energie():
     return any(l.split()[:2] == ["lowpowermode", "1"] for l in r.stdout.splitlines())
 
 
-def preparer(dossier, fichier):
-    shutil.copy2(A_ETOILE, dossier)
+def preparer(dossier, fichier, sans_profile=False):
+    """Copie A* dans `dossier`. Avec sans_profile, la copie perd sa ligne `profile on` (et rien
+    d'autre) : A* lui-même n'est pas modifié. Ajouté le 13/11/2026 pour la mesure officielle du
+    temps, le profileur gonflant le temps de A (RESULTATS_B, section 4)."""
+    if not sans_profile:
+        shutil.copy2(A_ETOILE, dossier)
+    else:
+        with open(A_ETOILE, encoding="utf-8", errors="replace") as f:
+            lignes = f.readlines()
+        garde = [l for l in lignes if l.strip() != "profile on"]
+        if len(lignes) - len(garde) != 1:
+            sys.exit(f"ÉCHEC : {len(lignes) - len(garde)} ligne(s) « profile on » dans A*, une attendue.")
+        with open(os.path.join(dossier, os.path.basename(A_ETOILE)), "w", encoding="utf-8") as f:
+            f.writelines(garde)
     with open(os.path.join(dossier, "liste_fichiers_extrait.txt"), "w") as f:
         f.write(fichier + "\n")
 
@@ -163,7 +175,10 @@ def ecrire_conditions(chemin, args):
         f"commande : mesurer_A.py temps --essais {args.essais}"
         + (" --sans-echauffement" if args.sans_echauffement else "")
         + (" --batterie" if args.batterie else "")
+        + (" --sans-profile" if args.sans_profile else "")
         + (f" --fichiers {' '.join(args.fichiers)}" if args.fichiers else ""),
+        "profileur : " + ("désactivé (copie de A* sans la ligne « profile on »)" if args.sans_profile
+                          else "actif (ligne « profile on » de A*, temps surestimé)"),
         f"machine : {sortie_commande(['sysctl', '-n', 'hw.model'])} / "
         f"{sortie_commande(['sysctl', '-n', 'machdep.cpu.brand_string'])} / "
         f"{int(sortie_commande(['sysctl', '-n', 'hw.memsize']) or 0) / 2**30:.0f} Go / "
@@ -203,7 +218,7 @@ def mesurer_temps(args):
                    + ["mediane_s", "FTR", "sorties_conformes"])
         for l in lignes:
             with tempfile.TemporaryDirectory(prefix="temps_A_") as tmp:
-                preparer(tmp, l["fichier"])
+                preparer(tmp, l["fichier"], args.sans_profile)
                 echauffement = "" if args.sans_echauffement else f"{lancer(tmp):.3f}"
                 essais = [lancer(tmp) for _ in range(args.essais)]
                 mediane = statistics.median(essais)
@@ -288,6 +303,8 @@ def main():
                    help="pas d'échauffement (WAV déjà en cache)")
     t.add_argument("--batterie", action="store_true",
                    help="accepter la batterie (mode économie d'énergie désactivé)")
+    t.add_argument("--sans-profile", action="store_true",
+                   help="lancer une copie de A* sans la ligne « profile on » (temps non gonflé)")
     t.set_defaults(action=mesurer_temps)
     pr = sous.add_parser("profil", help="un passage sous profile on")
     pr.add_argument("fichier", help="nom du WAV, par exemple 6209.260514052458.wav")

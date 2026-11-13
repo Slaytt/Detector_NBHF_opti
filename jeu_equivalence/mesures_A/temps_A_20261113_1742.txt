@@ -1,0 +1,10 @@
+date : 2026-11-13 17:42
+commande : mesurer_A.py temps --essais 1 --sans-echauffement --batterie --sans-profile
+profileur : désactivé (copie de A* sans la ligne « profile on »)
+machine : MacBookPro18,1 / Apple M1 Pro / 16 Go / macOS 26.5.2
+alimentation : Now drawing from 'Battery Power', mode économie d'énergie désactivé
+octave : GNU Octave (aarch64-apple-darwin25.4.0) version 11.3.0
+threads : OMP_NUM_THREADS=1, OPENBLAS_NUM_THREADS=1, VECLIB_MAXIMUM_THREADS=1
+A* : sha256 89a7ea7d12bb970710b1c29349fdb0874e025af77629faaf4b7c83520dcbfa50
+temps d'un essai : ligne « Duree totale » de BilanTot.txt (tic/toc de A, sans démarrage d'Octave)
+cache disque : chaud
