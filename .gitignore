@@ -16,6 +16,8 @@ octave-workspace
 research/jeu_equivalence/wav/
 
 # Notes : les .md du dépôt sont versionnés (README, LICENSE, PROTOCOLE_EQUIVALENCE) ; les notes de travail vivent dans le vault
+*.md
+
 
 # Python
 .venv/
