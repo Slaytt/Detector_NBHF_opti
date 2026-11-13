@@ -28,11 +28,12 @@ import time
 from datetime import datetime
 
 ICI = os.path.dirname(os.path.abspath(__file__))
-DOSSIER_A = os.path.dirname(ICI)                    # Detector_NBHF_opti
-RACINE = os.path.dirname(os.path.dirname(DOSSIER_A))  # StageBioacousitc
-A_ETOILE = os.path.join(DOSSIER_A, "run_bahia", "DetectorNBHF_todos_passe_bande.m")
+RESEARCH = os.path.dirname(ICI)                     # research/
+DOSSIER_A = os.path.dirname(RESEARCH)               # Detector_NBHF_opti
+RACINE = os.path.dirname(os.path.dirname(DOSSIER_A))  # StageBioacousitc (inchangé : dépôt dans Detector_opti/)
+A_ETOILE = os.path.join(RESEARCH, "run_bahia", "DetectorNBHF_todos_passe_bande.m")
 A_ORIGINAL = os.path.join(DOSSIER_A, "ressources", "DetectorNBHF_todos_passe_bande.m")
-PASSAGE_1 = os.path.join(DOSSIER_A, "run_bahia", "Resultats_passe_bande")
+PASSAGE_1 = os.path.join(RESEARCH, "run_bahia", "Resultats_passe_bande")
 LISTE = os.path.join(ICI, "liste_fichiers_extrait.txt")
 MANIFESTE = os.path.join(ICI, "manifeste.csv")
 
@@ -148,7 +149,7 @@ def main():
     archive = os.path.join(ICI, args.sortie)
     if os.path.exists(archive):
         sys.exit(f"{archive} existe déjà : choisis une autre --sortie (par exemple references_A_v2).")
-    with open(LISTE, "rb") as f1, open(os.path.join(DOSSIER_A, "run_bahia", "liste_fichiers_extrait.txt"), "rb") as f2:
+    with open(LISTE, "rb") as f1, open(os.path.join(RESEARCH, "run_bahia", "liste_fichiers_extrait.txt"), "rb") as f2:
         if f1.read() != f2.read():
             sys.exit("La liste de run_bahia ne correspond pas à jeu_equivalence/liste_fichiers_extrait.txt.")
 

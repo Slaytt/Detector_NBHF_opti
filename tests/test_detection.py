@@ -38,12 +38,12 @@ COEF_UMBRAL = 9
 TOL = 1e-12
 
 HERE = Path(__file__).resolve().parent
-WAV_DIR = HERE.parent.parent / "jeu_equivalence" / "wav"
-REF_DIR = HERE.parent / "octave_check" / "outputs"
+WAV_DIR = HERE.parent / "research" / "jeu_equivalence" / "wav"
+REF_DIR = HERE.parent / "research" / "octave_check" / "outputs"
 
 if not (REF_DIR / "filtered.csv").exists():
     pytest.skip(
-        "missing reference: run `octave --no-gui octave_check/export_filter.m`",
+        "missing reference: run `octave --no-gui research/octave_check/export_filter.m`",
         allow_module_level=True,
     )
 

@@ -2,9 +2,9 @@
 
 Verification tooling written by Claude (Anthropic); not part of the port itself.
 
-For each of the 24 files of jeu_equivalence/wav/, B runs the whole chain (read, filter,
+For each of the 24 files of research/jeu_equivalence/wav/, B runs the whole chain (read, filter,
 threshold, detection, fusion) and is compared with A*'s own output files
-(jeu_equivalence/references_A_v2/):
+(research/jeu_equivalence/references_A_v2/):
     - number of clicks per channel and after fusion
     - max date error, in samples (objective: 0)
     - precision, recall and F1 of B against A, a click matching within 1 sample (objective: 1)
@@ -38,9 +38,9 @@ from nbhf.reading import read_info
 from run_detector import runDetector
 
 HERE = Path(__file__).resolve().parent
-WAV_DIR = HERE.parent.parent / "jeu_equivalence" / "wav"
-RES_DIR = HERE.parent.parent / "jeu_equivalence" / "references_A_v2"
-A_LIST = HERE.parent.parent / "run_bahia" / "liste_fichiers_extrait.txt"
+WAV_DIR = HERE.parent / "research" / "jeu_equivalence" / "wav"
+RES_DIR = HERE.parent / "research" / "jeu_equivalence" / "references_A_v2"
+A_LIST = HERE.parent / "research" / "run_bahia" / "liste_fichiers_extrait.txt"
 
 FILES = sorted(p.name for p in WAV_DIR.glob("*.wav"))
 

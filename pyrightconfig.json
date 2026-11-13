@@ -1,5 +1,4 @@
 {
-    "venvPath": "Detector_py",
-    "venv": ".venv",
-    "extraPaths": ["Detector_py"]
+    "venvPath": ".",
+    "venv": ".venv"
 }

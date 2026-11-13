@@ -28,7 +28,7 @@ The loop does not look at the channel: two close clicks of the SAME channel are 
 References:
     - input: the accepted candidates of octave_check/outputs/detection.csv (step 4), i.e.
       A's own dates_clicks1 / dates_clicks2
-    - expected: jeu_equivalence/references_A_v2/Res_<file>.txt, A*'s own output
+    - expected: research/jeu_equivalence/references_A_v2/Res_<file>.txt, A*'s own output
       (dlmwrite, tab separated, columns date and canal, 16 significant digits)
 
 Expected interface of nbhf.fusion (rename here if you choose other names):
@@ -57,9 +57,9 @@ T_FUSION = 5 / 10000  # same as A*
 TOL_DATE = 1e-11  # seconds
 
 HERE = Path(__file__).resolve().parent
-WAV_DIR = HERE.parent.parent / "jeu_equivalence" / "wav"
-RES_DIR = HERE.parent.parent / "jeu_equivalence" / "references_A_v2"
-REF_DIR = HERE.parent / "octave_check" / "outputs"
+WAV_DIR = HERE.parent / "research" / "jeu_equivalence" / "wav"
+RES_DIR = HERE.parent / "research" / "jeu_equivalence" / "references_A_v2"
+REF_DIR = HERE.parent / "research" / "octave_check" / "outputs"
 
 
 def _merge(dates1, dates2, t=T_FUSION):
@@ -119,7 +119,7 @@ def test_mono_no_fusion():
 
 if not (REF_DIR / "detection.csv").exists():
     pytest.skip(
-        "missing reference: run `octave --no-gui octave_check/export_detection.m`",
+        "missing reference: run `octave --no-gui research/octave_check/export_detection.m`",
         allow_module_level=True,
     )
 

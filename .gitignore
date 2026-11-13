@@ -13,10 +13,9 @@ octave-workspace
 ._*
 
 # Wav
-jeu_equivalence/wav/
+research/jeu_equivalence/wav/
 
-# Notes
-*.md
+# Notes : les .md du dépôt sont versionnés (README, LICENSE, PROTOCOLE_EQUIVALENCE) ; les notes de travail vivent dans le vault
 
 # Python
 .venv/

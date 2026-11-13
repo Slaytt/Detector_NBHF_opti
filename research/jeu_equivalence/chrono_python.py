@@ -3,9 +3,9 @@
 
 Outillage de mesure écrit par Claude (Anthropic) le 13/11/2026 ; ne fait pas partie du portage.
 
-Usage (depuis Detector_NBHF_opti/, avec le venv de Detector_py) :
-    Detector_py/.venv/bin/python -I jeu_equivalence/chrono_python.py B --batterie
-    Detector_py/.venv/bin/python -I jeu_equivalence/chrono_python.py C --batterie
+Usage (depuis la racine du dépôt, avec le venv de la racine) :
+    .venv/bin/python -I research/jeu_equivalence/chrono_python.py B --batterie
+    .venv/bin/python -I research/jeu_equivalence/chrono_python.py C --batterie
     ... --fichiers 6209.260514052458.wav FichierTest_FitzRoy.wav
     ... --essais 1 --sans-echauffement        (mesure rapide, hors protocole)
 
@@ -42,15 +42,16 @@ os.environ["OPENBLAS_NUM_THREADS"] = "1"
 os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
 
 ICI = os.path.dirname(os.path.abspath(__file__))
-DEPOT = os.path.dirname(ICI)                        # Detector_NBHF_opti
-DETECTOR_PY = os.path.join(DEPOT, "Detector_py")
+DEPOT = os.path.dirname(os.path.dirname(ICI))      # Detector_NBHF_opti (ICI = research/jeu_equivalence)
+RESEARCH = os.path.dirname(ICI)                      # research/ : contient nbhfB (B figé)
 WAV = os.path.join(ICI, "wav")
 MANIFESTE = os.path.join(ICI, "manifeste.csv")
 REFERENCES = os.path.join(ICI, "references_A_v2")
 PAQUETS = {"B": "nbhfB", "C": "nbhf"}
 ESSAIS = 3
 
-sys.path.insert(0, DETECTOR_PY)
+sys.path.insert(0, DEPOT)      # nbhf (C)
+sys.path.insert(0, RESEARCH)   # nbhfB (B)
 import numpy as np   # noqa: E402  (après le réglage des threads)
 
 
@@ -113,9 +114,9 @@ def ecrire_conditions(chemin, args, paquet):
         + (" --sans-echauffement" if args.sans_echauffement else "")
         + (" --batterie" if args.batterie else "")
         + (f" --fichiers {' '.join(args.fichiers)}" if args.fichiers else ""),
-        f"version : {args.version} = paquet Detector_py/{paquet}/, sha256 des .py {sha_paquet(paquet)}",
+        f"version : {args.version} = paquet {paquet}/, sha256 des .py {sha_paquet(paquet)}",
         f"dépôt : commit {sortie_commande(['git', 'rev-parse', '--short', 'HEAD'], cwd=DEPOT)}"
-        + (" (modifications non commitées)" if sortie_commande(['git', 'status', '--porcelain', 'Detector_py'], cwd=DEPOT) else ""),
+        + (" (modifications non commitées)" if sortie_commande(['git', 'status', '--porcelain', 'nbhf', os.path.join('research', 'nbhfB')], cwd=DEPOT) else ""),
         f"machine : {sortie_commande(['sysctl', '-n', 'hw.model'])} / "
         f"{sortie_commande(['sysctl', '-n', 'machdep.cpu.brand_string'])} / "
         f"{int(sortie_commande(['sysctl', '-n', 'hw.memsize']) or 0) / 2**30:.0f} Go / "

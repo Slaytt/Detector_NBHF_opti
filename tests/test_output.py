@@ -17,7 +17,7 @@ and once, BilanTot.txt:
 Every line ends with '\\n' (also the last one); the trailing spaces are part of the format.
 Python's '%.16g' gives the same text as Octave's (checked on the reference files, 10/11).
 
-References: jeu_equivalence/references_A_v2/ (A*'s own output). Inputs come from
+References: research/jeu_equivalence/references_A_v2/ (A*'s own output). Inputs come from
 octave_check/outputs/detection.csv (accepted candidates, in loop order = A's detection order)
 and from nbhf.fusion.mergeChannels (step 5, validated).
 
@@ -49,9 +49,9 @@ PARAMS = dict(seuil=0.4, coefUmbral=9, fcutLow=100000, fcutHigh=180000,
 T_FUSION = 5 / 10000
 
 HERE = Path(__file__).resolve().parent
-WAV_DIR = HERE.parent.parent / "jeu_equivalence" / "wav"
-RES_DIR = HERE.parent.parent / "jeu_equivalence" / "references_A_v2"
-REF_DIR = HERE.parent / "octave_check" / "outputs"
+WAV_DIR = HERE.parent / "research" / "jeu_equivalence" / "wav"
+RES_DIR = HERE.parent / "research" / "jeu_equivalence" / "references_A_v2"
+REF_DIR = HERE.parent / "research" / "octave_check" / "outputs"
 
 
 def _same_text(ours, expected, context):
@@ -95,7 +95,7 @@ def test_bilan_small():
 
 if not (REF_DIR / "detection.csv").exists():
     pytest.skip(
-        "missing reference: run `octave --no-gui octave_check/export_detection.m`",
+        "missing reference: run `octave --no-gui research/octave_check/export_detection.m`",
         allow_module_level=True,
     )
 

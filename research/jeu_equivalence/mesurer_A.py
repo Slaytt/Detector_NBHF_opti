@@ -37,8 +37,9 @@ import tempfile
 from datetime import datetime
 
 ICI = os.path.dirname(os.path.abspath(__file__))
-DOSSIER_A = os.path.dirname(ICI)                    # Detector_NBHF_opti
-A_ETOILE = os.path.join(DOSSIER_A, "run_bahia", "DetectorNBHF_todos_passe_bande.m")
+RESEARCH = os.path.dirname(ICI)                     # research/
+DOSSIER_A = os.path.dirname(RESEARCH)               # Detector_NBHF_opti
+A_ETOILE = os.path.join(RESEARCH, "run_bahia", "DetectorNBHF_todos_passe_bande.m")
 MANIFESTE = os.path.join(ICI, "manifeste.csv")
 REFERENCES = os.path.join(ICI, "references_A_v2")
 SORTIES = os.path.join(ICI, "mesures_A")

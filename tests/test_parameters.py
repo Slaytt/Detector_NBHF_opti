@@ -25,7 +25,7 @@ import pytest
 from nbhf.parameters import Parameters
 
 HERE = Path(__file__).resolve().parent
-A_STAR = HERE.parent.parent / "run_bahia" / "DetectorNBHF_todos_passe_bande.m"
+A_STAR = HERE.parent / "research" / "run_bahia" / "DetectorNBHF_todos_passe_bande.m"
 
 # Parameters field -> variable of A*
 NAMES = {

@@ -14,13 +14,13 @@
 %    order: in PCM_16 every sample is k/32768, and all partial sums stay exactly
 %    representable in double. Python must therefore find the same values bit for bit.
 %
-%    Run: octave --no-gui octave_check/export_bounds.m   (from Detector_py/)
+%    Run: octave --no-gui research/octave_check/export_bounds.m   (from the repo root)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clear
 
 here = fileparts(mfilename('fullpath'));
-wav_dir = fullfile(here, '..', '..', 'jeu_equivalence', 'wav');
+wav_dir = fullfile(here, '..', 'jeu_equivalence', 'wav');
 out_dir = fullfile(here, 'outputs');
 
 % same as A*

@@ -3,7 +3,7 @@
 Verification tooling written by Claude (Anthropic); not part of the port itself.
 
 Reference: octave_check/outputs/{infos,bounds}.csv, produced by
-    octave --no-gui octave_check/export_bounds.m
+    octave --no-gui research/octave_check/export_bounds.m
 The CSV columns keep A's variable names (fm, tamano_total, nbCanales, inicio, fin...).
 
 Criterion: EXACT equality (max difference = 0) of the bounds and of the samples.
@@ -29,12 +29,12 @@ from nbhf.reading import chunk_bounds, n_chunks, read_chunk, read_info
 CHUNK_DURATION = 29.99  # t_trozo, same as A*
 
 HERE = Path(__file__).resolve().parent
-WAV_DIR = HERE.parent.parent / "jeu_equivalence" / "wav"
-REF_DIR = HERE.parent / "octave_check" / "outputs"
+WAV_DIR = HERE.parent / "research" / "jeu_equivalence" / "wav"
+REF_DIR = HERE.parent / "research" / "octave_check" / "outputs"
 
 if not (REF_DIR / "bounds.csv").exists():
     pytest.skip(
-        "missing reference: run `octave --no-gui octave_check/export_bounds.m`",
+        "missing reference: run `octave --no-gui research/octave_check/export_bounds.m`",
         allow_module_level=True,
     )
 

@@ -29,14 +29,14 @@
 %    A candidate whose energies are very close to the seuil ratio could flip: the test
 %    must report the margin |energieClic - seuil*energie_bande_passante|.
 %
-%    Run: octave --no-gui octave_check/export_detection.m   (from Detector_py/, ~10 min)
+%    Run: octave --no-gui research/octave_check/export_detection.m   (from the repo root, ~10 min)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clear
 pkg load signal
 
 here = fileparts(mfilename('fullpath'));
-wav_dir = fullfile(here, '..', '..', 'jeu_equivalence', 'wav');
+wav_dir = fullfile(here, '..', 'jeu_equivalence', 'wav');
 out_dir = fullfile(here, 'outputs');
 
 % same as A*

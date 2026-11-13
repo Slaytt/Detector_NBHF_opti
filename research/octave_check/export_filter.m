@@ -22,14 +22,14 @@
 %    std_senalHF (N-1 normalisation) and umbral = std*coef_umbral prepare step 3.
 %    ix_max is Octave's index (starts at 1) of the first maximum, as in [x, ix] = max(...).
 %
-%    Run: octave --no-gui octave_check/export_filter.m   (from Detector_py/)
+%    Run: octave --no-gui research/octave_check/export_filter.m   (from the repo root)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clear
 pkg load signal
 
 here = fileparts(mfilename('fullpath'));
-wav_dir = fullfile(here, '..', '..', 'jeu_equivalence', 'wav');
+wav_dir = fullfile(here, '..', 'jeu_equivalence', 'wav');
 out_dir = fullfile(here, 'outputs');
 
 % same as A*

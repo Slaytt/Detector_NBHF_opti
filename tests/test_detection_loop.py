@@ -3,7 +3,7 @@
 Verification tooling written by Claude (Anthropic); not part of the port itself.
 
 Reference: octave_check/outputs/, produced by
-    octave --no-gui octave_check/export_detection.m      (~10 min)
+    octave --no-gui research/octave_check/export_detection.m      (~10 min)
     - detection.csv         one line per candidate, in loop order (accepted or rejected):
                             fichier;i;canal;k;ix;x;umbral;win_start;win_end;n_win;
                             energieClic;energie_bande_passante;accepte;date
@@ -62,12 +62,12 @@ PARAMS = dict(seuil=0.4, tMinimo=1 / 1000, f1clic=120000, f2clic=140000, f1=3000
 TOL = 1e-12
 
 HERE = Path(__file__).resolve().parent
-WAV_DIR = HERE.parent.parent / "jeu_equivalence" / "wav"
-REF_DIR = HERE.parent / "octave_check" / "outputs"
+WAV_DIR = HERE.parent / "research" / "jeu_equivalence" / "wav"
+REF_DIR = HERE.parent / "research" / "octave_check" / "outputs"
 
 if not (REF_DIR / "detection.csv").exists():
     pytest.skip(
-        "missing reference: run `octave --no-gui octave_check/export_detection.m`",
+        "missing reference: run `octave --no-gui research/octave_check/export_detection.m`",
         allow_module_level=True,
     )
 

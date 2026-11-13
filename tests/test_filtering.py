@@ -3,7 +3,7 @@
 Verification tooling written by Claude (Anthropic); not part of the port itself.
 
 Reference: octave_check/outputs/, produced by
-    octave --no-gui octave_check/export_filter.m
+    octave --no-gui research/octave_check/export_filter.m
     - coefs_<fm>.txt            coefficients recomputed as in A* (same format as A* modif 4)
     - filtered.csv              fingerprints of senalHF for each chunk x channel
     - filtered_<fm>_head.bin    first / last 100 000 samples of senalHF (chunk 1, channel 1,
@@ -47,12 +47,12 @@ TOL = 1e-12
 TOL_COEFS = 1e-14
 
 HERE = Path(__file__).resolve().parent
-WAV_DIR = HERE.parent.parent / "jeu_equivalence" / "wav"
-REF_DIR = HERE.parent / "octave_check" / "outputs"
+WAV_DIR = HERE.parent / "research" / "jeu_equivalence" / "wav"
+REF_DIR = HERE.parent / "research" / "octave_check" / "outputs"
 
 if not (REF_DIR / "filtered.csv").exists():
     pytest.skip(
-        "missing reference: run `octave --no-gui octave_check/export_filter.m`",
+        "missing reference: run `octave --no-gui research/octave_check/export_filter.m`",
         allow_module_level=True,
     )
 
