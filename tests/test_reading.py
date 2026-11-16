@@ -16,6 +16,9 @@ Expected interface of nbhf.reading:
         (start at 1, end included), so directly comparable with audioread.
     read_chunk(path, start, end)                      -> float64 ndarray of shape (n, n_channels),
         like `extrait` in A
+
+    launch test :
+        .venv/bin/python -m pytest tests/test_reading.py
 """
 
 import csv

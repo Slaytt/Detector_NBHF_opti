@@ -1,5 +1,7 @@
 """writing of Res_*.txt and BilanTot.txt."""
 
+import csv
+
 def writeChannel(path, dates):
     with open(path, "w", encoding="utf-8") as f:
         for d in dates:
@@ -25,3 +27,10 @@ def bilanLine(fileName, n1, n2, n):
 
 def bilanFooter(duration):
     return "\nDuree totale %f s \n" % duration
+
+def writeCandidates(path, table):
+    with open(path, "w", encoding="utf-8", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(table.dtype.names)
+            for row in table:
+                writer.writerow(row.tolist())
