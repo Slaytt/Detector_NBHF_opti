@@ -1,7 +1,5 @@
 """Step 7: end-to-end equivalence of B with A*, file by file, then the whole program.
 
-Verification tooling written by Claude (Anthropic); not part of the port itself.
-
 For each of the 24 files of research/jeu_equivalence/wav/, B runs the whole chain (read, filter,
 threshold, detection, fusion) and is compared with A*'s own output files
 (research/jeu_equivalence/references_A_v2/):

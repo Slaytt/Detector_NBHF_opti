@@ -1,7 +1,5 @@
 """Checkpoint of step 2: filtering of a chunk, compared with A*.
 
-Verification tooling written by Claude (Anthropic); not part of the port itself.
-
 Reference: octave_check/outputs/, produced by
     octave --no-gui research/octave_check/export_filter.m
     - coefs_<fm>.txt            coefficients recomputed as in A* (same format as A* modif 4)

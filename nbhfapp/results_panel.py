@@ -1,0 +1,182 @@
+"""Zone 4: the table of candidates of the selected file.
+
+The panel never changes the candidate table. The decision shown is recomputed from it
+with the seuil of the moment; the `accepted` column of the run stays as it was.
+"""
+import numpy as np
+from PySide6.QtCore import QAbstractTableModel, QModelIndex, QSortFilterProxyModel, Qt
+from PySide6.QtGui import QBrush, QColor
+from PySide6.QtWidgets import (
+    QAbstractItemView, QComboBox, QHBoxLayout, QHeaderView, QLabel, QTableView,
+    QVBoxLayout, QWidget,
+)
+
+from nbhfapp.analysis import decide
+
+REJECTED_COLOR = (150, 150, 150)     # rejected rows are written in grey
+
+ALL, ACCEPTED, REJECTED = range(3)
+(COL_TIME, COL_CHANNEL, COL_AMPLITUDE, COL_OVER, COL_CLICK, COL_REF,
+ COL_RATIO, COL_PEAK, COL_DECISION) = range(9)
+
+
+def ratios(table):
+    """levelClick / levelRef, for display and sorting only (inf when levelRef is 0)."""
+    with np.errstate(divide="ignore", invalid="ignore"):
+        return table["levelClick"] / table["levelRef"]
+
+
+class CandidateModel(QAbstractTableModel):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._table = None
+        self._mask = np.zeros(0, dtype=bool)
+        self._values = []           # one numeric array per column, for sorting
+        self._headers = [
+            self.tr("Time (s)"), self.tr("Ch."), self.tr("Amplitude"), self.tr("× threshold"),
+            self.tr("Click level"), self.tr("Ref. level"), self.tr("Ratio"),
+            self.tr("Peak (kHz)"), self.tr("Decision"),
+        ]
+        self._formats = ["%.4f", "%d", "%.3g", "%.1f", "%.3g", "%.3g", "%.2f", "%.1f", None]
+        self._greyBrush = QBrush(QColor(*REJECTED_COLOR))
+
+    def setTable(self, table, mask):
+        self.beginResetModel()
+        self._table = table
+        self._mask = mask
+        if table is None:
+            self._values = []
+        else:
+            with np.errstate(divide="ignore", invalid="ignore"):
+                over = table["amplitude"] / table["threshold"]
+            self._values = [
+                table["date"], table["channel"], table["amplitude"], over,
+                table["levelClick"], table["levelRef"], ratios(table),
+                table["peakFreq"] / 1000, None,
+            ]
+        self.endResetModel()
+
+    def setMask(self, mask):
+        self._mask = mask
+        if self.rowCount():
+            self.dataChanged.emit(self.index(0, 0), self.index(self.rowCount() - 1, COL_DECISION))
+
+    def accepted(self, row):
+        return bool(self._mask[row])
+
+    def rowCount(self, parent=QModelIndex()):
+        return 0 if parent.isValid() or self._table is None else len(self._table)
+
+    def columnCount(self, parent=QModelIndex()):
+        return 0 if parent.isValid() else len(self._headers)
+
+    def headerData(self, section, orientation, role=Qt.ItemDataRole.DisplayRole):
+        if orientation == Qt.Orientation.Horizontal and role == Qt.ItemDataRole.DisplayRole:
+            return self._headers[section]
+        return None
+
+    def data(self, index, role=Qt.ItemDataRole.DisplayRole):
+        if not index.isValid():
+            return None
+        row, column = index.row(), index.column()
+        if role == Qt.ItemDataRole.DisplayRole:
+            if column == COL_DECISION:
+                return self.tr("Accepted") if self._mask[row] else self.tr("Rejected")
+            return self._formats[column] % self._values[column][row]
+        if role == Qt.ItemDataRole.UserRole:        # sort key
+            if column == COL_DECISION:
+                return int(self._mask[row])
+            return float(self._values[column][row])
+        if role == Qt.ItemDataRole.TextAlignmentRole:
+            if column == COL_DECISION:
+                return int(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            return int(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        if role == Qt.ItemDataRole.ForegroundRole and not self._mask[row]:
+            return self._greyBrush
+        return None
+
+
+class CandidateFilter(QSortFilterProxyModel):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._mode = ALL
+        self.setSortRole(Qt.ItemDataRole.UserRole)
+
+    def setMode(self, mode):
+        self.beginFilterChange()
+        self._mode = mode
+        self.endFilterChange()
+
+    def refilter(self):
+        self.beginFilterChange()
+        self.endFilterChange()
+
+    def filterAcceptsRow(self, sourceRow, sourceParent):
+        if self._mode == ALL:
+            return True
+        accepted = self.sourceModel().accepted(sourceRow)
+        return accepted if self._mode == ACCEPTED else not accepted
+
+
+class ResultsPanel(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._table = None
+        self._seuil = 0.0
+        self._mask = np.zeros(0, dtype=bool)
+
+        self.titleLabel = QLabel()
+        self.filterCombo = QComboBox()
+        self.filterCombo.addItems([self.tr("All candidates"), self.tr("Accepted only"),
+                                   self.tr("Rejected only")])
+
+        self.model = CandidateModel(self)
+        self.proxy = CandidateFilter(self)
+        self.proxy.setSourceModel(self.model)
+        self.view = QTableView()
+        self.view.setModel(self.proxy)
+        self.view.setSortingEnabled(True)
+        self.view.sortByColumn(COL_TIME, Qt.SortOrder.AscendingOrder)
+        self.view.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.view.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.view.verticalHeader().setVisible(False)
+        self.view.verticalHeader().setDefaultSectionSize(22)
+        self.view.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
+        self.view.horizontalHeader().setStretchLastSection(True)
+
+        top = QHBoxLayout()
+        top.addWidget(self.titleLabel, 1)
+        top.addWidget(self.filterCombo)
+
+        layout = QVBoxLayout(self)
+        layout.addLayout(top)
+        layout.addWidget(self.view, 1)
+
+        self.filterCombo.currentIndexChanged.connect(self.proxy.setMode)
+        self.clear()
+
+    # --- content -------------------------------------------------------------------
+
+    def clear(self):
+        self.setFile("", None)
+
+    def setFile(self, name, table):
+        """Show the candidate table of one file (None: nothing to show)."""
+        self._table = table
+        self._mask = decide(table, self._seuil) if table is not None else np.zeros(0, dtype=bool)
+        self.model.setTable(table, self._mask)
+        self.titleLabel.setText(self.tr("Candidates of {name}").format(name=name) if table is not None
+                                else self.tr("No result for this file yet"))
+        self.setEnabled(table is not None)
+
+    def setSeuil(self, seuil):
+        """seuil moved: new decision, same table."""
+        self._seuil = seuil
+        if self._table is None:
+            return
+        self._mask = decide(self._table, seuil)
+        self.model.setMask(self._mask)
+        self.proxy.refilter()
+
+    def mask(self):
+        return self._mask

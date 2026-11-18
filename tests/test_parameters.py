@@ -1,7 +1,5 @@
 """Checkpoint of step 7a: the Parameters dataclass, compared with A*'s parameter block.
 
-Verification tooling written by Claude (Anthropic); not part of the port itself.
-
 The defaults of Parameters must be EXACTLY the values of A* (run_bahia/DetectorNBHF_todos_passe_bande.m,
 block %%% PARAMETROS), written as in Octave (t_minimo = 1/1000, t_fusion = 5/10000). They are read
 from the .m file here, so that the test fails if A* changes.

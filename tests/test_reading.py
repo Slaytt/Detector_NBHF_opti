@@ -1,7 +1,5 @@
 """Checkpoint of step 1: reading a chunk, compared with A*.
 
-Verification tooling written by Claude (Anthropic); not part of the port itself.
-
 Reference: octave_check/outputs/{infos,bounds}.csv, produced by
     octave --no-gui research/octave_check/export_bounds.m
 The CSV columns keep A's variable names (fm, tamano_total, nbCanales, inicio, fin...).

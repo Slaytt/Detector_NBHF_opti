@@ -1,7 +1,5 @@
 """Candidats_<name>.csv: the candidate table written to disk and read back.
 
-Verification tooling written by Claude (Anthropic); not part of the core itself.
-
 This file is not produced by A (A keeps no trace of rejected candidates), so there is no
 Octave reference. Criterion: reading the CSV back gives EXACTLY the table in memory
 (same columns, same order, every float bit for bit).

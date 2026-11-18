@@ -1,7 +1,5 @@
 """Checkpoint of step 4: detection loop on one channel, compared with A*.
 
-Verification tooling written by Claude (Anthropic); not part of the port itself.
-
 Reference: octave_check/outputs/, produced by
     octave --no-gui research/octave_check/export_detection.m      (~10 min)
     - detection.csv         one line per candidate, in loop order (accepted or rejected):

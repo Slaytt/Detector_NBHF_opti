@@ -1,6 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % export_bounds : reference for step 1 of port B (reading a chunk)
-%    Verification tooling, written by Claude (Anthropic); not part of the port itself.
 %    The bound computations are copied from A* (run_bahia/DetectorNBHF_todos_passe_bande.m):
 %    audioinfo, N, t_entrada, t_salida, inicioN, finN, floor(max(.,1)), floor(min(.,tamano_total)).
 %    Variable names and CSV columns keep A's names on purpose.

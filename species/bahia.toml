@@ -1,0 +1,14 @@
+# Preset "bahia": the parameter block of A* (research/run_bahia/DetectorNBHF_todos_passe_bande.m).
+# Frequencies in Hz, durations in seconds. Frequencies must be whole numbers.
+
+coefUmbral = 9          # amplitude threshold = coefUmbral x std of the filtered chunk
+seuil = 0.4             # accepted when level(click band) > seuil x level(reference band)
+fcutLow = 100000        # band-pass filter; above Nyquist (Bahia, 288 kHz) fcutHigh is ignored: high-pass
+fcutHigh = 180000
+f1clic = 120000         # click band
+f2clic = 140000
+f1 = 30000              # reference band
+f2 = 90000
+tMinimo = 0.001         # samples set to zero around a peak (s)
+chunkDuration = 29.99   # t_trozo (s)
+tFusion = 0.0005        # merge of the two channels (s)

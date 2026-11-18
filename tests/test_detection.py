@@ -1,7 +1,5 @@
 """Checkpoint of step 3: threshold of a chunk, compared with A*.
 
-Verification tooling written by Claude (Anthropic); not part of the port itself.
-
 Reference: octave_check/outputs/filtered.csv (produced by export_filter.m, step 2),
 columns std_senalHF and umbral, for each chunk x channel of every file:
     umbral1 = std(senal1HF)*coef_umbral        (A*, coef_umbral = 9)

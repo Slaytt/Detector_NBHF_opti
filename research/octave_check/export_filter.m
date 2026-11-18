@@ -1,6 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % export_filter : reference for step 2 of port B (filter of a chunk)
-%    Verification tooling, written by Claude (Anthropic); not part of the port itself.
 %    The filter is copied from A* (run_bahia/DetectorNBHF_todos_passe_bande.m):
 %    butter(5,...) with the A* modif 3 rule (high-pass if fcut_high >= fm/2),
 %    then filter(butterBHF1,butterBHF2,senal) on each chunk and each channel,

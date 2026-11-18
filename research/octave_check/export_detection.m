@@ -1,6 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % export_detection : reference for step 4 of port B (detection loop on one channel)
-%    Verification tooling, written by Claude (Anthropic); not part of the port itself.
 %    The loop is copied from A* (run_bahia/DetectorNBHF_todos_passe_bande.m), for
 %    each chunk and each channel: filter, umbral = std*coef_umbral, then
 %        while max(senalHF) > umbral

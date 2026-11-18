@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Temps de calcul de B ou de C selon le protocole (section 7), fichier par fichier.
 
-Outillage de mesure écrit par Claude (Anthropic) le 13/11/2026 ; ne fait pas partie du portage.
-
 Usage (depuis la racine du dépôt, avec le venv de la racine) :
     .venv/bin/python -I research/jeu_equivalence/chrono_python.py B --batterie
     .venv/bin/python -I research/jeu_equivalence/chrono_python.py C --batterie

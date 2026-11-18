@@ -1,7 +1,5 @@
 """Decision rule of A, recomputed from the candidate table.
 
-Verification tooling written by Claude (Anthropic); not part of the core itself.
-
 The rule of A, inside the detection loop:
     if (energieClic > seuil * energie_bande_passante)
 In the table: levelClick > seuil * levelRef.

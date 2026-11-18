@@ -1,7 +1,5 @@
 """Checkpoint of step 6: writing of the output files, compared with A*'s own files.
 
-Verification tooling written by Claude (Anthropic); not part of the port itself.
-
 A writes, per file (Resultats_passe_bande/):
     Res_<name>_Canal1.txt, Res_<name>_Canal2.txt   (stereo only) dlmwrite(path, dates):
         one date per line, in DETECTION order (chunk by chunk, strongest first), '%.16g'

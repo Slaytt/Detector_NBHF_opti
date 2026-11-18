@@ -1,7 +1,5 @@
 """Checkpoint of step 5: fusion of the two channels, compared with A*.
 
-Verification tooling written by Claude (Anthropic); not part of the port itself.
-
 The code of A, once all chunks of a file are done (dates_clicks1 / dates_clicks2 are the
 accepted dates of channel 1 / 2, in detection order):
     if (nbCanales > 1)
