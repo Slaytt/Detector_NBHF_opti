@@ -4,6 +4,7 @@ and the candidates of the selected file (bottom).
 The window owns the state of the last run (its parameters, one candidate table per
 file) and passes it to the panels. The panels do not know each other.
 """
+import dataclasses
 from pathlib import Path
 
 from PySide6.QtCore import Qt
@@ -11,7 +12,6 @@ from PySide6.QtGui import QAction, QKeySequence
 from PySide6.QtWidgets import QMainWindow, QMessageBox, QSplitter
 
 from nbhf.reading import read_info
-from nbhfapp.analysis import needsRecompute
 from nbhfapp.export import FileRun, exportRuns
 from nbhfapp.export_dialog import ExportDialog
 from nbhfapp.files_panel import FilesPanel
@@ -76,15 +76,13 @@ class MainWindow(QMainWindow):
         self.filesPanel.stopRequested.connect(self.stopRun)
         self.filesPanel.listChanged.connect(self._forgetRemoved)
         self.filesPanel.fileSelected.connect(self._onFileSelected)
-        self.paramsPanel.directChanged.connect(self._onDirectChanged)
-        self.paramsPanel.recomputeChanged.connect(self._onRecomputeChanged)
+        self.paramsPanel.changed.connect(self._onParamsChanged)
         self.runner.fileStarted.connect(self._onStarted)
         self.runner.fileDone.connect(self._onDone)
         self.runner.fileFailed.connect(self.filesPanel.markFailed)
         self.runner.finished.connect(self._onFinished)
         self.runner.crashed.connect(self._onCrashed)
 
-        self._onDirectChanged()
         self._refreshActions()
 
     # --- run -----------------------------------------------------------------------
@@ -128,7 +126,7 @@ class MainWindow(QMainWindow):
         self.summaryPanel.setStale(False)
         self.filesPanel.resetStates()
         self.filesPanel.setRunning(True)
-        self.paramsPanel.setRecomputeEnabled(False)
+        self.paramsPanel.setEditable(False)
         self._refreshActions()
         self.runner.start(paths, outDir, params)
 
@@ -146,7 +144,7 @@ class MainWindow(QMainWindow):
         except Exception as e:
             self.filesPanel.markFailed(path, f"{type(e).__name__}: {e}")
             return
-        self.runs[path] = FileRun(Path(path), table, info.sample_rate, info.n_channels > 1)
+        self.runs[path] = FileRun(Path(path), table, info.sample_rate, info.n_channels > 1, nMerged)
         self.filesPanel.markDone(path, nMerged)
         self.summaryPanel.setRuns(self.runs.values())
         if path == self.selectedPath:
@@ -166,7 +164,7 @@ class MainWindow(QMainWindow):
 
     def _endRun(self):
         self.filesPanel.setRunning(False)
-        self.paramsPanel.setRecomputeEnabled(True)
+        self.paramsPanel.setEditable(True)
         self._refreshActions()
 
     def _onFileSelected(self, path):
@@ -180,18 +178,16 @@ class MainWindow(QMainWindow):
         else:
             self.resultsPanel.setFile(run.path.name, run.table)
 
-    def _onDirectChanged(self):
-        seuil, tFusion = self.paramsPanel.seuil(), self.paramsPanel.tFusion()
-        self.resultsPanel.setSeuil(seuil)
-        self.summaryPanel.setDirect(seuil, tFusion)
-
-    def _onRecomputeChanged(self):
+    def _onParamsChanged(self):
         self.summaryPanel.setStale(bool(self._staleNames()))
 
     def _staleNames(self):
         if self.runParams is None or not self.runs:
             return []
-        return needsRecompute(self.paramsPanel.current(), self.runParams)
+        # any parameter differing from the run makes the results stale
+        shown = self.paramsPanel.current()
+        return [f.name for f in dataclasses.fields(shown)
+                if getattr(shown, f.name) != getattr(self.runParams, f.name)]
 
     def _forgetRemoved(self):
         listed = {str(p) for p in self.filesPanel.paths()}
@@ -208,24 +204,16 @@ class MainWindow(QMainWindow):
     def openExport(self):
         if not self.runs:
             return
-        shown = self.paramsPanel.current()
-        staleLines = [
-            self.tr("{name}: {used} in the run, {shown} shown").format(
-                name=name, used=getattr(self.runParams, name), shown=getattr(shown, name))
-            for name in self._staleNames()
-        ]
-        dialog = ExportDialog(self, len(self.runs), shown.seuil, shown.tFusion,
-                              Path(self.runOutDir) / "Export", staleLines)
+        dialog = ExportDialog(self, len(self.runs), self.runParams.seuil, self.runParams.tFusion,
+                              Path(self.runOutDir) / "Export")
         if dialog.exec() != ExportDialog.DialogCode.Accepted:
             return
         self.export(dialog.folder(), dialog.options())
 
     def export(self, folder, options):
         """Write the export; returns the files written (empty on failure)."""
-        shown = self.paramsPanel.current()
         try:
-            written = exportRuns(list(self.runs.values()), folder, self.runParams,
-                                 shown.seuil, shown.tFusion, options)
+            written = exportRuns(list(self.runs.values()), folder, self.runParams, options)
         except OSError as e:
             QMessageBox.warning(self, self.windowTitle(), self.tr("The export failed:") + f"\n{e}")
             return []
