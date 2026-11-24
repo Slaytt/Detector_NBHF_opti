@@ -1,16 +1,5 @@
 #!/usr/bin/env python3
 """Relance A* et archive ses sorties comme références d'équivalence (protocole, section 3).
-
-Étapes :
-  1. vérifie les WAV du jeu à partir des sha256 de manifeste.csv ;
-  2. relance A* (run_bahia) dans un dossier temporaire, sans toucher à run_bahia/Resultats_passe_bande ;
-  3. compare les deux passages octet par octet. Seule la ligne « Duree totale » de BilanTot.txt
-     peut différer, puisque c'est un temps ;
-  4. si tout est identique, copie le premier passage dans references_A/ (ou dans --sortie)
-     et écrit VERSION.txt.
-
-Le script refuse d'écraser une archive existante : une nouvelle référence va dans references_A_v2/.
-
 Usage :
     python3 -I jeu_equivalence/archiver_references.py [--sortie references_A_v2]
 """

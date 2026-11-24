@@ -1,4 +1,4 @@
-"""Export dialog: which files to write from the results shown, and where.
+"""Export dialog: which files to write from the results of the last run, and where.
 
 The dialog only collects choices; export.exportRuns writes the files.
 """
@@ -11,9 +11,8 @@ from nbhfapp.export import CLICKS, TRAINS, ExportOptions
 
 
 class ExportDialog(QDialog):
-    def __init__(self, parent, nFiles, seuil, tFusion, folder, staleLines):
-        """staleLines: one text line per parameter that differs between the panel and the run
-        (empty when the results shown match the parameters shown)."""
+    def __init__(self, parent, nFiles, seuil, tFusion, folder):
+        """seuil, tFusion: those of the run."""
         super().__init__(parent)
         self.setWindowTitle(self.tr("Export"))
 
@@ -21,15 +20,6 @@ class ExportDialog(QDialog):
             "{n} file(s), with level ratio threshold {seuil} and channel merge {fusion} ms.")
             .format(n=nFiles, seuil="%g" % seuil, fusion="%g" % (tFusion * 1000)))
         self.summaryLabel.setWordWrap(True)
-
-        self.staleLabel = QLabel()
-        self.staleLabel.setWordWrap(True)
-        self.staleLabel.setStyleSheet("background: #f5d76e; color: black; padding: 4px;")
-        if staleLines:
-            self.staleLabel.setText(self.tr(
-                "The results were computed with other parameters than those shown. "
-                "The export uses the parameters of the run:") + "\n" + "\n".join(staleLines))
-        self.staleLabel.setVisible(bool(staleLines))
 
         self.ravenCheck = QCheckBox(self.tr("Raven selection tables"))
         self.ravenCheck.setChecked(True)
@@ -70,7 +60,6 @@ class ExportDialog(QDialog):
 
         layout = QVBoxLayout(self)
         layout.addWidget(self.summaryLabel)
-        layout.addWidget(self.staleLabel)
         layout.addWidget(self.ravenCheck)
         layout.addLayout(ravenOptions)
         layout.addWidget(self.resCheck)

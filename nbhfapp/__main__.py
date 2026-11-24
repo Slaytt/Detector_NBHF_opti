@@ -9,16 +9,13 @@ def main():
     from PySide6.QtCore import QLibraryInfo, QLocale, QTranslator
     from PySide6.QtWidgets import QApplication
 
-    from nbhfapp import settings
     from nbhfapp.mainwindow import MainWindow
 
     app = QApplication(sys.argv)
     app.setApplicationName("NBHF click detector")
 
-    # language chosen in the preferences, else the one of the system; English when no
-    # translation exists for it (the texts of the code are in English)
-    chosen = settings.language()
-    locale = QLocale() if chosen == settings.SYSTEM else QLocale(chosen)
+    # language of the system; English when no translation exists for it
+    locale = QLocale()
     translator = QTranslator(app)
     if translator.load(locale, "nbhfapp", "_", str(Path(__file__).parent / "i18n")):
         app.installTranslator(translator)

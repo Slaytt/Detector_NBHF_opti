@@ -30,8 +30,6 @@ ES = {
     "Export…": "Exportar…",
     "{n} file(s), with level ratio threshold {seuil} and channel merge {fusion} ms.":
         "{n} archivo(s), con umbral del cociente de niveles {seuil} y fusión de canales {fusion} ms.",
-    "The results were computed with other parameters than those shown. The export uses the parameters of the run:":
-        "Los resultados se calcularon con parámetros distintos de los mostrados. La exportación usa los parámetros del cálculo:",
     "Raven selection tables": "Tablas de selección de Raven",
     "One click per line": "Un clic por línea",
     "Clicks grouped in trains, largest gap": "Clics agrupados en trenes, intervalo máximo",
@@ -87,7 +85,6 @@ ES = {
     "Stopping after the current file…": "Deteniendo al terminar el archivo en curso…",
     "{n} file(s) processed in {seconds} s": "{n} archivo(s) procesado(s) en {seconds} s",
     "The computation stopped unexpectedly (code {code}).": "El cálculo se detuvo de forma inesperada (código {code}).",
-    "{name}: {used} in the run, {shown} shown": "{name}: {used} en el cálculo, {shown} mostrado",
     "The export failed:": "La exportación falló:",
     "{n} file(s) written in {folder}": "{n} archivo(s) escrito(s) en {folder}",
     # parameters
@@ -102,11 +99,6 @@ ES = {
     "Chunk duration": "Duración del trozo",
     "Level ratio threshold": "Umbral del cociente de niveles",
     "Merge of the two channels": "Fusión de los dos canales",
-    "Needs a new run": "Requiere un nuevo cálculo",
-    "Threshold of the original detector": "Umbral del detector original",
-    "Model from a file… (not available yet)": "Modelo desde un archivo… (aún no disponible)",
-    "Applied at once": "Se aplica de inmediato",
-    "Decision rule": "Regla de decisión",
     "Preset:": "Preajuste:",
     "modified": "modificado",
     # results

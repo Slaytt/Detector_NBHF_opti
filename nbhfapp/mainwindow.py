@@ -169,8 +169,6 @@ class MainWindow(QMainWindow):
         self.paramsPanel.setRecomputeEnabled(True)
         self._refreshActions()
 
-    # --- selection and parameters --------------------------------------------------
-
     def _onFileSelected(self, path):
         self.selectedPath = path
         self._showSelected()

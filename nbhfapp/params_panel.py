@@ -1,7 +1,4 @@
-"""Zone 2: preset and parameters, in two groups.
-
-"Needs a new run": parameters that change which candidates exist.
-"Applied at once": parameters that choose among the candidates already measured.
+"""Zone 2: preset and parameters. Every change takes effect at the next run.
 
 A value left as the preset shows it is returned exactly as the preset holds it (no
 round trip through the display units), so an untouched panel gives the Parameters of A.
@@ -11,13 +8,13 @@ from pathlib import Path
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
-    QComboBox, QDoubleSpinBox, QFormLayout, QGroupBox, QHBoxLayout, QLabel, QSlider,
-    QVBoxLayout, QWidget,
+    QComboBox, QDoubleSpinBox, QFormLayout, QGroupBox, QHBoxLayout, QLabel, QVBoxLayout,
+    QWidget,
 )
 
 from nbhf.parameters import Parameters
 
-SPECIES_DIR = Path(__file__).resolve().parent.parent / "species"
+SPECIES_DIR = Path(__file__).resolve().parent / "species"
 DEFAULT_PRESET = "bahia"
 
 KHZ, MS, SECONDS, PLAIN = "khz", "ms", "s", "plain"
@@ -36,7 +33,6 @@ FIELDS = {
     "seuil": (PLAIN, 2, 0, 10),
     "tFusion": (MS, 2, 0, 1000),
 }
-SEUIL_SLIDER_MAX = 200          # the slider covers 0.00 to 2.00
 
 
 def toDisplay(name, value):
@@ -73,8 +69,7 @@ def loadPresets(folder=SPECIES_DIR):
 
 
 class ParamsPanel(QWidget):
-    recomputeChanged = Signal()     # a parameter of the first group changed
-    directChanged = Signal()        # seuil or tFusion changed
+    changed = Signal()              # a parameter or the preset changed
 
     def __init__(self, parent=None, presets=None):
         super().__init__(parent)
@@ -113,29 +108,11 @@ class ParamsPanel(QWidget):
         self._spins["seuil"].setSingleStep(0.01)
         self._spins["coefUmbral"].setSingleStep(0.5)
 
-        self.recomputeGroup = QGroupBox(self.tr("Needs a new run"))
-        form = QFormLayout(self.recomputeGroup)
-        for name in ("fcutLow", "fcutHigh", "coefUmbral", "tMinimo",
-                     "f1clic", "f2clic", "f1", "f2", "chunkDuration"):
+        self.paramsGroup = QGroupBox()
+        form = QFormLayout(self.paramsGroup)
+        for name in FIELDS:
             form.addRow(labels[name], self._spins[name])
-            self._spins[name].valueChanged.connect(self._onRecompute)
-
-        self.seuilSlider = QSlider(Qt.Orientation.Horizontal)
-        self.seuilSlider.setRange(0, SEUIL_SLIDER_MAX)
-        self.ruleCombo = QComboBox()
-        self.ruleCombo.addItems([self.tr("Threshold of the original detector"),
-                                 self.tr("Model from a file… (not available yet)")])
-        self.ruleCombo.model().item(1).setEnabled(False)
-
-        self.directGroup = QGroupBox(self.tr("Applied at once"))
-        form = QFormLayout(self.directGroup)
-        form.addRow(self.tr("Decision rule"), self.ruleCombo)
-        form.addRow(labels["seuil"], self._spins["seuil"])
-        form.addRow("", self.seuilSlider)
-        form.addRow(labels["tFusion"], self._spins["tFusion"])
-        self._spins["seuil"].valueChanged.connect(self._onSeuilSpin)
-        self.seuilSlider.valueChanged.connect(self._onSeuilSlider)
-        self._spins["tFusion"].valueChanged.connect(self._onDirect)
+            self._spins[name].valueChanged.connect(self._onValue)
 
         presetRow = QHBoxLayout()
         presetRow.addWidget(QLabel(self.tr("Preset:")))
@@ -144,8 +121,7 @@ class ParamsPanel(QWidget):
 
         layout = QVBoxLayout(self)
         layout.addLayout(presetRow)
-        layout.addWidget(self.recomputeGroup)
-        layout.addWidget(self.directGroup)
+        layout.addWidget(self.paramsGroup)
         layout.addStretch()
 
         self.presetCombo.currentTextChanged.connect(self._onPreset)
@@ -167,19 +143,13 @@ class ParamsPanel(QWidget):
                 values[name] = fromDisplay(name, spin.value())
         return dataclasses.replace(self._base, **values)
 
-    def seuil(self):
-        return self.current().seuil
-
-    def tFusion(self):
-        return self.current().tFusion
-
     def setValue(self, name, value):
         """Set one parameter, in the units of Parameters (Hz, s). Used by the tests."""
         self._spins[name].setValue(toDisplay(name, value))
 
-    def setRecomputeEnabled(self, enabled):
-        self.presetCombo.setEnabled(enabled)
-        self.recomputeGroup.setEnabled(enabled)
+    def setEditable(self, editable):
+        self.presetCombo.setEnabled(editable)
+        self.paramsGroup.setEnabled(editable)
 
     # --- internals -----------------------------------------------------------------
 
@@ -190,40 +160,14 @@ class ParamsPanel(QWidget):
         self._loading = True
         for field, spin in self._spins.items():
             spin.setValue(toDisplay(field, getattr(self._base, field)))
-        self.seuilSlider.setValue(self._sliderPosition())
         self._loading = False
         self._showModified()
-        self.recomputeChanged.emit()
-        self.directChanged.emit()
-
-    def _sliderPosition(self):
-        return min(SEUIL_SLIDER_MAX, int(round(self._spins["seuil"].value() * 100)))
+        self.changed.emit()
 
     def _showModified(self):
         self.modifiedLabel.setText(self.tr("modified") if self.current() != self._base else "")
 
-    def _onRecompute(self):
+    def _onValue(self):
         if not self._loading:
             self._showModified()
-            self.recomputeChanged.emit()
-
-    def _onDirect(self):
-        if not self._loading:
-            self._showModified()
-            self.directChanged.emit()
-
-    def _onSeuilSpin(self):
-        if self._loading:
-            return
-        self._loading = True
-        self.seuilSlider.setValue(self._sliderPosition())
-        self._loading = False
-        self._onDirect()
-
-    def _onSeuilSlider(self, position):
-        if self._loading:
-            return
-        self._loading = True
-        self._spins["seuil"].setValue(position / 100)
-        self._loading = False
-        self._onDirect()
+            self.changed.emit()

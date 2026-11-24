@@ -9,17 +9,17 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class Parameters:
-    coefUmbral: float = 9         
+    coefUmbral: float = 9
     seuil: float = 0.4
-    fcutLow: float = 100000        
-    fcutHigh: float = 180000       
-    f1clic: float = 120000          # click band [f1clic, f2clic] (Hz)
+    fcutLow: float = 100000
+    fcutHigh: float = 180000
+    f1clic: float = 120000
     f2clic: float = 140000
-    f1: float = 30000               # comparison band [f1, f2] (Hz)
+    f1: float = 30000
     f2: float = 90000
     tMinimo: float = 1 / 1000
-    chunkDuration: float = 29.99    # t_trozo (s)
-    tFusion: float = 5 / 10000      # t_fusion (s)
+    chunkDuration: float = 29.99
+    tFusion: float = 5 / 10000
 
     @classmethod
     def fromToml(cls, path):

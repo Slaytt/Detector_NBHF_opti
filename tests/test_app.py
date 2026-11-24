@@ -6,9 +6,9 @@ how the window looks.
 
 Criteria:
   - an untouched parameter panel gives exactly Parameters() (the values of A*);
-  - after a run, the counters shown are those of the run and the Res files those of A;
-  - moving seuil changes the decision shown, not the candidate table;
-  - changing a parameter of the first group flags the results as outdated;
+  - after a run, the counters and decisions shown are those of the run and the Res files
+    those of A;
+  - changing a parameter flags the results as outdated;
   - the Spanish translation loads and covers every text.
 
     launch test :
@@ -87,14 +87,14 @@ def test_untouched_panel_is_A_star(app):
 def test_edited_panel(app):
     panel = ParamsPanel()
     panel.setValue("f1clic", 110000)
-    panel.seuilSlider.setValue(60)
+    panel.setValue("seuil", 0.6)
     p = panel.current()
     assert p.f1clic == 110000 and type(p.f1clic) is int          # the core does f1clic // 1000
     assert p.seuil == 0.6
     assert panel.modifiedLabel.text() != ""
     assert p == Parameters(f1clic=110000, seuil=0.6)
     panel.setValue("f1clic", 120000)
-    panel.seuilSlider.setValue(40)
+    panel.setValue("seuil", 0.4)
     assert panel.current() == Parameters() and panel.modifiedLabel.text() == ""
 
 
@@ -107,16 +107,18 @@ def test_run_shows_the_results_of_A(window):
     w.filesPanel.selectPath(WAV_DIR / STEREO)
     run = w.runs[str(WAV_DIR / STEREO)]
     assert STEREO in w.resultsPanel.titleLabel.text()
-    assert np.array_equal(w.resultsPanel.mask(), run.table["accepted"])
     assert w.resultsPanel.proxy.rowCount() == len(run.table)
+    decisions = [w.resultsPanel.model.accepted(r) for r in range(len(run.table))]
+    assert np.array_equal(decisions, run.table["accepted"])
+    w.resultsPanel.filterCombo.setCurrentIndex(1)
+    assert w.resultsPanel.proxy.rowCount() == int(run.table["accepted"].sum())
+    w.resultsPanel.filterCombo.setCurrentIndex(0)
     assert w.exportAction.isEnabled()
     assert not w.summaryPanel.staleLabel.isVisible()
 
 
-def test_summary_gives_the_counts_of_A(window, app):
+def test_summary_gives_the_counts_of_A(window):
     w = window
-    w.paramsPanel.seuilSlider.setValue(40)
-    app.processEvents()
     rows = {name: (c, a, d) for name, c, a, d in w.summaryPanel.rows()}
     for name in (MONO, STEREO):
         table = w.runs[str(WAV_DIR / name)].table
@@ -124,37 +126,8 @@ def test_summary_gives_the_counts_of_A(window, app):
         assert rows[name] == (len(table), int(table["accepted"].sum()), len(merged)), name
     assert rows["Total"] == tuple(rows[MONO][k] + rows[STEREO][k] for k in range(3))
 
-    w.paramsPanel.seuilSlider.setValue(200)                      # stricter: fewer accepted, same candidates
-    app.processEvents()
-    strict = {name: (c, a, d) for name, c, a, d in w.summaryPanel.rows()}
-    assert strict[STEREO][0] == rows[STEREO][0] and strict[STEREO][1] < rows[STEREO][1]
-    w.paramsPanel.seuilSlider.setValue(40)
-    app.processEvents()
 
-
-def test_moving_seuil_changes_the_decision_not_the_table(window, app):
-    w = window
-    w.filesPanel.selectPath(WAV_DIR / STEREO)
-    table = w.runs[str(WAV_DIR / STEREO)].table
-    before = table.copy()
-    nAccepted = int(table["accepted"].sum())
-
-    w.paramsPanel.seuilSlider.setValue(200)
-    app.processEvents()
-    assert w.paramsPanel.seuil() == 2.0
-    assert 0 < w.resultsPanel.mask().sum() < nAccepted
-    assert np.array_equal(table, before)
-    assert not w.summaryPanel.staleLabel.isVisible()             # seuil never needs a new run
-    w.resultsPanel.filterCombo.setCurrentIndex(1)
-    assert w.resultsPanel.proxy.rowCount() == int(w.resultsPanel.mask().sum())
-    w.resultsPanel.filterCombo.setCurrentIndex(0)
-
-    w.paramsPanel.seuilSlider.setValue(40)
-    app.processEvents()
-    assert np.array_equal(w.resultsPanel.mask(), table["accepted"])
-
-
-def test_recompute_parameter_flags_the_results(window, app):
+def test_changed_parameter_flags_the_results(window, app):
     w = window
     w.filesPanel.selectPath(WAV_DIR / MONO)
     w.paramsPanel.setValue("coefUmbral", 12)
@@ -164,6 +137,12 @@ def test_recompute_parameter_flags_the_results(window, app):
     app.processEvents()
     assert not w.summaryPanel.staleLabel.isVisible()
     assert w.paramsPanel.current() == Parameters()
+    w.paramsPanel.setValue("seuil", 0.6)                          # seuil too needs a new run now
+    app.processEvents()
+    assert w.summaryPanel.staleLabel.isVisible()
+    w.paramsPanel.setValue("seuil", 0.4)
+    app.processEvents()
+    assert not w.summaryPanel.staleLabel.isVisible()
 
 
 def test_export_from_the_window(window, tmp_path):

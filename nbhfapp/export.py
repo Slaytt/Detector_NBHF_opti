@@ -1,8 +1,7 @@
-"""Export of the results shown, with the direct settings of the moment. No Qt.
+"""Export of the results of the last run, with the parameters of that run. No Qt.
 
-The files written at the end of a run (batch.py) use the parameters of the run, like A.
-An export applies the seuil and tFusion currently displayed to the candidate tables,
-without processing the audio again.
+The decision is the one the run took (the `accepted` column of the candidate tables);
+nothing is recomputed, the audio is not read again.
 """
 from dataclasses import dataclass
 from pathlib import Path
@@ -13,7 +12,7 @@ from nbhf.output import (
 from nbhf.raven import (
     RAVEN_HEADER, TRAIN_HEADER, clickSelections, trainSelections, writeSelections,
 )
-from nbhfapp.analysis import channelDates, decide, mergedRows
+from nbhf.fusion import mergeChannels
 
 CLICKS, TRAINS = "clicks", "trains"
 
@@ -34,15 +33,16 @@ class FileRun:
     table: object                   # candidate table
     sampleRate: int
     stereo: bool
+    nMerged: int                    # detections after merging the channels
 
 
 def ravenName(wavName):
     return f"{Path(wavName).stem}.nbhf.selections.txt"
 
 
-def exportRuns(runs, outDir, params, seuil, tFusion, options):
-    """Write the chosen files for every run. params are those of the run (bands, cut-offs);
-    seuil and tFusion are the displayed ones. Returns the list of files written."""
+def exportRuns(runs, outDir, params, options):
+    """Write the chosen files for every run. params are those of the run.
+    Returns the list of files written."""
     outDir = Path(outDir)
     outDir.mkdir(parents=True, exist_ok=True)
     written = []
@@ -50,11 +50,12 @@ def exportRuns(runs, outDir, params, seuil, tFusion, options):
 
     for run in runs:
         stem = Path(run.path).stem
-        mask = decide(run.table, seuil)
+        mask = run.table["accepted"]
 
         if options.res:
-            dates1, dates2 = channelDates(run.table, mask, run.stereo)
-            merged = mergedRows(run.table, mask, run.stereo, tFusion)
+            dates1 = run.table["date"][mask & (run.table["channel"] == 1)]
+            dates2 = run.table["date"][mask & (run.table["channel"] == 2)] if run.stereo else None
+            merged = mergeChannels(dates1, dates2, params.tFusion)
             if dates2 is not None:
                 for channel, dates in ((1, dates1), (2, dates2)):
                     target = outDir / f"Res_{stem}_Canal{channel}.txt"
@@ -86,7 +87,7 @@ def exportRuns(runs, outDir, params, seuil, tFusion, options):
         # same header and lines as A; no "Duree totale": an export computes nothing
         target = outDir / "BilanTot.txt"
         with open(target, "w", encoding="utf-8") as bilan:
-            bilan.write(bilanHeader(seuil, params.coefUmbral, params.fcutLow, params.fcutHigh,
+            bilan.write(bilanHeader(params.seuil, params.coefUmbral, params.fcutLow, params.fcutHigh,
                                     params.f1clic, params.f2clic, params.f1, params.f2))
             bilan.writelines(bilanLines)
         written.append(target)

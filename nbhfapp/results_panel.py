@@ -1,7 +1,7 @@
 """Zone 4: the table of candidates of the selected file.
 
-The panel never changes the candidate table. The decision shown is recomputed from it
-with the seuil of the moment; the `accepted` column of the run stays as it was.
+The panel never changes the candidate table. The decision shown is the one of the run
+(its `accepted` column).
 """
 import numpy as np
 from PySide6.QtCore import QAbstractTableModel, QModelIndex, QSortFilterProxyModel, Qt
@@ -10,8 +10,6 @@ from PySide6.QtWidgets import (
     QAbstractItemView, QComboBox, QHBoxLayout, QHeaderView, QLabel, QTableView,
     QVBoxLayout, QWidget,
 )
-
-from nbhfapp.analysis import decide
 
 REJECTED_COLOR = (150, 150, 150)     # rejected rows are written in grey
 
@@ -30,7 +28,7 @@ class CandidateModel(QAbstractTableModel):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._table = None
-        self._mask = np.zeros(0, dtype=bool)
+        self._mask = np.zeros(0, dtype=bool)     # the accepted column of the table
         self._values = []           # one numeric array per column, for sorting
         self._headers = [
             self.tr("Time (s)"), self.tr("Ch."), self.tr("Amplitude"), self.tr("× threshold"),
@@ -40,26 +38,22 @@ class CandidateModel(QAbstractTableModel):
         self._formats = ["%.4f", "%d", "%.3g", "%.1f", "%.3g", "%.3g", "%.2f", "%.1f", None]
         self._greyBrush = QBrush(QColor(*REJECTED_COLOR))
 
-    def setTable(self, table, mask):
+    def setTable(self, table):
         self.beginResetModel()
         self._table = table
-        self._mask = mask
         if table is None:
+            self._mask = np.zeros(0, dtype=bool)
             self._values = []
         else:
             with np.errstate(divide="ignore", invalid="ignore"):
                 over = table["amplitude"] / table["threshold"]
+            self._mask = table["accepted"]
             self._values = [
                 table["date"], table["channel"], table["amplitude"], over,
                 table["levelClick"], table["levelRef"], ratios(table),
                 table["peakFreq"] / 1000, None,
             ]
         self.endResetModel()
-
-    def setMask(self, mask):
-        self._mask = mask
-        if self.rowCount():
-            self.dataChanged.emit(self.index(0, 0), self.index(self.rowCount() - 1, COL_DECISION))
 
     def accepted(self, row):
         return bool(self._mask[row])
@@ -107,10 +101,6 @@ class CandidateFilter(QSortFilterProxyModel):
         self._mode = mode
         self.endFilterChange()
 
-    def refilter(self):
-        self.beginFilterChange()
-        self.endFilterChange()
-
     def filterAcceptsRow(self, sourceRow, sourceParent):
         if self._mode == ALL:
             return True
@@ -121,9 +111,6 @@ class CandidateFilter(QSortFilterProxyModel):
 class ResultsPanel(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._table = None
-        self._seuil = 0.0
-        self._mask = np.zeros(0, dtype=bool)
 
         self.titleLabel = QLabel()
         self.filterCombo = QComboBox()
@@ -162,21 +149,7 @@ class ResultsPanel(QWidget):
 
     def setFile(self, name, table):
         """Show the candidate table of one file (None: nothing to show)."""
-        self._table = table
-        self._mask = decide(table, self._seuil) if table is not None else np.zeros(0, dtype=bool)
-        self.model.setTable(table, self._mask)
+        self.model.setTable(table)
         self.titleLabel.setText(self.tr("Candidates of {name}").format(name=name) if table is not None
                                 else self.tr("No result for this file yet"))
         self.setEnabled(table is not None)
-
-    def setSeuil(self, seuil):
-        """seuil moved: new decision, same table."""
-        self._seuil = seuil
-        if self._table is None:
-            return
-        self._mask = decide(self._table, seuil)
-        self.model.setMask(self._mask)
-        self.proxy.refilter()
-
-    def mask(self):
-        return self._mask

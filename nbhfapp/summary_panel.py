@@ -4,7 +4,7 @@ Per file, how many candidates, how many pass the level test, how many detections
 after merging the channels. A candidate can only fail one test
 (levelClick > seuil * levelRef), so these three numbers say what the detector did.
 
-The counts follow the seuil and tFusion of the moment, without a new run.
+The counts are those of the last run, with its parameters.
 """
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
@@ -12,15 +12,11 @@ from PySide6.QtWidgets import (
     QAbstractItemView, QHeaderView, QLabel, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget,
 )
 
-from nbhfapp.analysis import counts, decide
-
 
 class SummaryPanel(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._runs = []             # FileRun of the last run, in the order they were processed
-        self._seuil = 0.0
-        self._tFusion = 0.0
 
         self.staleLabel = QLabel(self.tr(
             "Parameters changed since this run: these results were computed with the previous "
@@ -59,10 +55,6 @@ class SummaryPanel(QWidget):
         self._runs = list(runs)
         self._fill()
 
-    def setDirect(self, seuil, tFusion):
-        self._seuil, self._tFusion = seuil, tFusion
-        self._fill()
-
     def setStale(self, stale):
         self.staleLabel.setVisible(bool(stale))
 
@@ -75,8 +67,8 @@ class SummaryPanel(QWidget):
     def _fill(self):
         lines = []
         for run in self._runs:
-            mask = decide(run.table, self._seuil)
-            lines.append((run.path.name, *counts(run.table, mask, run.stereo, self._tFusion)))
+            nAccepted = int(run.table["accepted"].sum())
+            lines.append((run.path.name, len(run.table), nAccepted, run.nMerged))
         if len(lines) > 1:
             lines.append((self.tr("Total"), *(sum(line[k] for line in lines) for k in (1, 2, 3))))
 
