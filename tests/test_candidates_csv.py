@@ -7,7 +7,6 @@ Octave reference. Criterion: reading the CSV back gives EXACTLY the table in mem
 Expected interface of nbhf.output:
     writeCandidates(path, table) -> writes one header line (the column names of
         CANDIDATE_DTYPE, comma separated) then one line per candidate
-And run_detector.runDetector writes Candidats_<stem>.csv next to Res_<stem>.txt.
 
     launch test :
         .venv/bin/python -m pytest tests/test_candidates_csv.py
@@ -23,7 +22,6 @@ from nbhf.detection import CANDIDATE_DTYPE
 from nbhf.detector import Detector
 from nbhf.output import writeCandidates
 from nbhf.parameters import Parameters
-from run_detector import runDetector
 
 HERE = Path(__file__).resolve().parent
 WAV_DIR = HERE.parent / "research" / "jeu_equivalence" / "wav"
@@ -87,19 +85,3 @@ def test_no_blank_lines(tmp_path):
     raw = out.read_bytes()
     assert b"\r\r" not in raw
     assert len(raw.splitlines()) == 3
-
-
-def test_program_writes_candidates(tmp_path):
-    name = FILES[0]
-    list_file = tmp_path / "liste.txt"
-    list_file.write_text(name + "\n", encoding="utf-8")
-    out_dir = tmp_path / "out"
-    out_dir.mkdir()
-
-    runDetector(WAV_DIR, list_file, out_dir, Parameters())
-
-    out = out_dir / f"Candidats_{Path(name).stem}.csv"
-    assert out.exists(), f"{out.name} not written by runDetector"
-    _, back = _read_back(out)
-    table = Detector(Parameters()).detectFile(WAV_DIR / name).table
-    assert np.array_equal(back, table)

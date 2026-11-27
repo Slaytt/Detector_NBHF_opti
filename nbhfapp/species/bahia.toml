@@ -11,4 +11,4 @@ f1 = 30000              # reference band
 f2 = 90000
 tMinimo = 0.001         # samples set to zero around a peak (s)
 chunkDuration = 29.99   # t_trozo (s)
-tFusion = 0.0005        # merge of the two channels (s)
+tFusion = 0.0005 

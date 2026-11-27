@@ -14,14 +14,9 @@ from PySide6.QtWidgets import (
 REJECTED_COLOR = (150, 150, 150)     # rejected rows are written in grey
 
 ALL, ACCEPTED, REJECTED = range(3)
-(COL_TIME, COL_CHANNEL, COL_AMPLITUDE, COL_OVER, COL_CLICK, COL_REF,
- COL_RATIO, COL_PEAK, COL_DECISION) = range(9)
-
-
-def ratios(table):
-    """levelClick / levelRef, for display and sorting only (inf when levelRef is 0)."""
-    with np.errstate(divide="ignore", invalid="ignore"):
-        return table["levelClick"] / table["levelRef"]
+# amplitude, threshold, levels, ratio and peak frequency stay in the table (export,
+# Raven) but are not shown: they made the list harder to read.
+COL_TIME, COL_CHANNEL, COL_DECISION = range(3)
 
 
 class CandidateModel(QAbstractTableModel):
@@ -31,11 +26,9 @@ class CandidateModel(QAbstractTableModel):
         self._mask = np.zeros(0, dtype=bool)     # the accepted column of the table
         self._values = []           # one numeric array per column, for sorting
         self._headers = [
-            self.tr("Time (s)"), self.tr("Ch."), self.tr("Amplitude"), self.tr("× threshold"),
-            self.tr("Click level"), self.tr("Ref. level"), self.tr("Ratio"),
-            self.tr("Peak (kHz)"), self.tr("Decision"),
+            self.tr("Time (s)"), self.tr("Ch."), self.tr("Decision"),
         ]
-        self._formats = ["%.4f", "%d", "%.3g", "%.1f", "%.3g", "%.3g", "%.2f", "%.1f", None]
+        self._formats = ["%.4f", "%d", None]
         self._greyBrush = QBrush(QColor(*REJECTED_COLOR))
 
     def setTable(self, table):
@@ -45,14 +38,8 @@ class CandidateModel(QAbstractTableModel):
             self._mask = np.zeros(0, dtype=bool)
             self._values = []
         else:
-            with np.errstate(divide="ignore", invalid="ignore"):
-                over = table["amplitude"] / table["threshold"]
             self._mask = table["accepted"]
-            self._values = [
-                table["date"], table["channel"], table["amplitude"], over,
-                table["levelClick"], table["levelRef"], ratios(table),
-                table["peakFreq"] / 1000, None,
-            ]
+            self._values = [table["date"], table["channel"], None]
         self.endResetModel()
 
     def accepted(self, row):

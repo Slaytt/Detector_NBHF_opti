@@ -29,8 +29,9 @@ def bilanFooter(duration):
     return "\nDuree totale %f s \n" % duration
 
 def writeCandidates(path, table):
+    """csv with all candidates data (only on demand, from the export dialog)."""
     with open(path, "w", encoding="utf-8", newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow(table.dtype.names)
-            for row in table:
-                writer.writerow(row.tolist())
+        writer = csv.writer(f)
+        writer.writerow(table.dtype.names)
+        for row in table:
+            writer.writerow(row.tolist())

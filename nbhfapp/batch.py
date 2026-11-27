@@ -15,18 +15,17 @@ from pathlib import Path
 
 from nbhf.detector import Detector
 from nbhf.output import (
-    bilanFooter, bilanHeader, bilanLine, writeCandidates, writeChannel, writeMerged,
+    bilanFooter, bilanHeader, bilanLine, writeChannel, writeMerged,
 )
 
 
 def writeFileOutputs(outDir, name, result):
-    """Res_<stem>.txt (+ one file per channel in stereo) and Candidats_<stem>.csv."""
+    """Res_<stem>.txt (+ one file per channel in stereo)."""
     stem = Path(name).stem
     if result.dates2 is not None:
         writeChannel(outDir / f"Res_{stem}_Canal1.txt", result.dates1)
         writeChannel(outDir / f"Res_{stem}_Canal2.txt", result.dates2)
     writeMerged(outDir / f"Res_{stem}.txt", result.merged)
-    writeCandidates(outDir / f"Candidats_{stem}.csv", result.table)
 
 
 def runBatch(paths, outDir, params, queue, stopEvent):

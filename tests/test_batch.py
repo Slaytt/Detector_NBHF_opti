@@ -52,9 +52,8 @@ def test_outputs_are_those_of_A(tmp_path):
     stems = [Path(MONO).stem, Path(STEREO).stem]
     assert written == sorted([
         "BilanTot.txt",
-        f"Res_{stems[0]}.txt", f"Candidats_{stems[0]}.csv",
+        f"Res_{stems[0]}.txt",
         f"Res_{stems[1]}.txt", f"Res_{stems[1]}_Canal1.txt", f"Res_{stems[1]}_Canal2.txt",
-        f"Candidats_{stems[1]}.csv",
     ])
     for name in written:
         if name.startswith("Res_"):

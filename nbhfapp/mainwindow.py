@@ -9,7 +9,7 @@ from pathlib import Path
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QAction, QKeySequence
-from PySide6.QtWidgets import QMainWindow, QMessageBox, QSplitter
+from PySide6.QtWidgets import QFrame, QLabel, QMainWindow, QMessageBox, QSplitter
 
 from nbhf.reading import read_info
 from nbhfapp.export import FileRun, exportRuns
@@ -47,12 +47,25 @@ class MainWindow(QMainWindow):
         top.setStretchFactor(2, 2)
         top.setSizes([480, 480, 440])
 
+        # bottom right: room kept for the future metrics tab (precision / recall)
+        self.metricsPlaceholder = QLabel(self.tr("Metrics (coming later)"))
+        self.metricsPlaceholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.metricsPlaceholder.setFrameShape(QFrame.Shape.StyledPanel)
+        self.metricsPlaceholder.setEnabled(False)
+
+        bottom = QSplitter(Qt.Orientation.Horizontal)
+        bottom.addWidget(self.resultsPanel)
+        bottom.addWidget(self.metricsPlaceholder)
+        bottom.setStretchFactor(0, 1)
+        bottom.setStretchFactor(1, 1)
+        bottom.setSizes([700, 700])
+
         main = QSplitter(Qt.Orientation.Vertical)
         main.addWidget(top)
-        main.addWidget(self.resultsPanel)
-        main.setStretchFactor(0, 3)
+        main.addWidget(bottom)
+        main.setStretchFactor(0, 4)
         main.setStretchFactor(1, 1)
-        main.setSizes([500, 360])
+        main.setSizes([620, 240])
         self.setCentralWidget(main)
         self.statusBar()
 

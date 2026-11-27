@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 
 from nbhf.detector import Detector
-from nbhf.output import bilanFooter, bilanHeader, bilanLine, writeChannel, writeMerged, writeCandidates
+from nbhf.output import bilanFooter, bilanHeader, bilanLine, writeChannel, writeMerged
 from nbhf.parameters import Parameters
 
 
@@ -24,12 +24,11 @@ def runDetector(wavDir, listFile, outDir, params):
                                 params.f1clic, params.f2clic, params.f1, params.f2))
         for name in names:
             result = detector.detectFile(wavDir / name)
-            stem = Path(name).stem 
+            stem = Path(name).stem
             if result.dates2 is not None:
                 writeChannel(outDir / f"Res_{stem}_Canal1.txt", result.dates1)
                 writeChannel(outDir / f"Res_{stem}_Canal2.txt", result.dates2)
             writeMerged(outDir / f"Res_{stem}.txt", result.merged)
-            writeCandidates(outDir / f"Candidats_{stem}.csv", result.table)
             n2 = 0 if result.dates2 is None else len(result.dates2)
             bilan.write(bilanLine(name, len(result.dates1), n2, len(result.merged)))
         bilan.write(bilanFooter(time.perf_counter() - t0))    # toc()
